@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import { inter } from "./fonts";
+
+import "./globals.css";
+
 
 export const metadata: Metadata = {
   title: "Next.js + MongoDB",
