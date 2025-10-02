@@ -15,6 +15,7 @@ import {
   Clock
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useSidebar } from './SidebarContext';
 
 interface NavItem {
   name: string;
@@ -33,7 +34,7 @@ const navItems: NavItem[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { isCollapsed, setIsCollapsed } = useSidebar();
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {

@@ -3,14 +3,16 @@
 import { Menu } from 'lucide-react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { MobileSidebar } from '@/components/layout/MobileSidebar';
+import { SidebarProvider, useSidebar } from '@/components/layout/SidebarContext';
 import { useState } from 'react';
 
-export default function DashboardLayout({
+function DashboardLayoutContent({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isCollapsed } = useSidebar();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -24,7 +26,11 @@ export default function DashboardLayout({
       />
 
       {/* Main content */}
-      <div className="lg:pl-[280px]">
+      <div 
+        className={`transition-all duration-300 ${
+          isCollapsed ? 'lg:pl-16' : 'lg:pl-[280px]'
+        }`}
+      >
         {/* Mobile header */}
         <header className="lg:hidden sticky top-0 z-20 flex items-center justify-between p-4 bg-primary border-b border-primary">
           <button
@@ -44,5 +50,17 @@ export default function DashboardLayout({
         </main>
       </div>
     </div>
+  );
+}
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <SidebarProvider>
+      <DashboardLayoutContent>{children}</DashboardLayoutContent>
+    </SidebarProvider>
   );
 }

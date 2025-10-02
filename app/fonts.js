@@ -1,15 +1,22 @@
-// Using system fonts due to network restrictions
-// import { Inter } from "next/font/google";
+// Professional fonts with system fallbacks
+// Using system fonts for optimal performance and reliability
 
-// export const inter = Inter({
-//   weight: ["400", "500", "600"],
-//   subsets: ["latin"],
-//   display: "swap",
-//   variable: "--font-inter",
-// });
-
-// Fallback to system fonts
+// Inter-compatible system fonts for UI
 export const inter = {
   variable: "--font-inter",
   className: "font-sans",
+  style: {
+    fontFamily:
+      'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  },
+};
+
+// JetBrains Mono-compatible system fonts for financial data
+export const jetbrainsMono = {
+  variable: "--font-jetbrains-mono",
+  className: "font-mono",
+  style: {
+    fontFamily:
+      '"JetBrains Mono", "SF Mono", Monaco, Menlo, Consolas, "Courier New", monospace',
+  },
 };

@@ -16,10 +16,11 @@ export default {
                     ...defaultTheme.fontFamily.sans
                 ],
   			mono: [
+  				'var(--font-jetbrains-mono)',
   				'JetBrains Mono',
-  				'Menlo',
+  				'SF Mono',
   				'Monaco',
-  				'Courier New',
+  				'Menlo',
                     ...defaultTheme.fontFamily.mono
                 ]
   		},
