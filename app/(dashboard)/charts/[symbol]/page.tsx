@@ -249,7 +249,7 @@ export default function ChartPage() {
                 <Activity className="h-3 w-3" />
                 Open
               </div>
-              <div className="text-sm font-semibold">{formatPrice(quote.open)}</div>
+              <div className="text-sm font-semibold text-foreground">{formatPrice(quote.open)}</div>
             </div>
             <div className="bg-card border rounded-lg p-2">
               <div className="text-xs text-muted-foreground flex items-center gap-1">
@@ -270,28 +270,28 @@ export default function ChartPage() {
                 <Clock className="h-3 w-3" />
                 Prev Close
               </div>
-              <div className="text-sm font-semibold">{formatPrice(quote.previousClose)}</div>
+              <div className="text-sm font-semibold text-foreground">{formatPrice(quote.previousClose)}</div>
             </div>
             <div className="bg-card border rounded-lg p-2">
               <div className="text-xs text-muted-foreground flex items-center gap-1">
                 <BarChart3 className="h-3 w-3" />
                 Volume
               </div>
-              <div className="text-sm font-semibold">{(quote.volume / 1e6).toFixed(1)}M</div>
+              <div className="text-sm font-semibold text-foreground">{(quote.volume / 1e6).toFixed(1)}M</div>
             </div>
             <div className="bg-card border rounded-lg p-2">
               <div className="text-xs text-muted-foreground flex items-center gap-1">
                 <Percent className="h-3 w-3" />
                 Day Range
               </div>
-              <div className="text-sm font-semibold">{metrics?.dayRangePercent.toFixed(2)}%</div>
+              <div className="text-sm font-semibold text-foreground">{metrics?.dayRangePercent.toFixed(2)}%</div>
             </div>
             <div className="bg-card border rounded-lg p-2">
               <div className="text-xs text-muted-foreground flex items-center gap-1">
                 <DollarSign className="h-3 w-3" />
                 52W High
               </div>
-              <div className="text-sm font-semibold">
+              <div className="text-sm font-semibold text-foreground">
                 {quote.fiftyTwoWeekHigh ? formatPrice(quote.fiftyTwoWeekHigh) : 'N/A'}
               </div>
             </div>
@@ -300,7 +300,7 @@ export default function ChartPage() {
                 <DollarSign className="h-3 w-3" />
                 52W Low
               </div>
-              <div className="text-sm font-semibold">
+              <div className="text-sm font-semibold text-foreground">
                 {quote.fiftyTwoWeekLow ? formatPrice(quote.fiftyTwoWeekLow) : 'N/A'}
               </div>
             </div>
@@ -312,7 +312,7 @@ export default function ChartPage() {
           <div className="grid grid-cols-8 gap-2">
             <div className="bg-card border rounded-lg p-2">
               <div className="text-xs text-muted-foreground">Market Cap</div>
-              <div className="text-sm font-semibold">
+              <div className="text-sm font-semibold text-foreground">
                 {quote.marketCap ? `$${(quote.marketCap / 1e9).toFixed(2)}B` : 'N/A'}
               </div>
             </div>
@@ -330,25 +330,25 @@ export default function ChartPage() {
             </div>
             <div className="bg-card border rounded-lg p-2">
               <div className="text-xs text-muted-foreground">Day Range $</div>
-              <div className="text-sm font-semibold">{formatPrice(metrics.dayRange)}</div>
+              <div className="text-sm font-semibold text-foreground">{formatPrice(metrics.dayRange)}</div>
             </div>
             <div className="bg-card border rounded-lg p-2">
               <div className="text-xs text-muted-foreground">Avg Volume</div>
-              <div className="text-sm font-semibold">{(metrics.avgVolume / 1e6).toFixed(1)}M</div>
+              <div className="text-sm font-semibold text-foreground">{(metrics.avgVolume / 1e6).toFixed(1)}M</div>
             </div>
             <div className="bg-card border rounded-lg p-2">
               <div className="text-xs text-muted-foreground">Vol Ratio</div>
-              <div className="text-sm font-semibold">{metrics.volumeRatio.toFixed(2)}x</div>
+              <div className="text-sm font-semibold text-foreground">{metrics.volumeRatio.toFixed(2)}x</div>
             </div>
             <div className="bg-card border rounded-lg p-2">
               <div className="text-xs text-muted-foreground">Spread</div>
-              <div className="text-sm font-semibold">
+              <div className="text-sm font-semibold text-foreground">
                 {formatPrice(quote.high - quote.low)}
               </div>
             </div>
             <div className="bg-card border rounded-lg p-2">
               <div className="text-xs text-muted-foreground">Updated</div>
-              <div className="text-xs font-semibold">
+              <div className="text-xs font-semibold text-foreground">
                 {quote ? new Date(quote.timestamp).toLocaleTimeString() : 'N/A'}
               </div>
             </div>
