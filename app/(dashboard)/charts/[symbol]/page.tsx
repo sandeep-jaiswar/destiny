@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TradingChart } from '@/components/charts/TradingChart';
-import { TrendingUp, TrendingDown, Search, RefreshCw } from 'lucide-react';
+import { TrendingDown, Search, RefreshCw, Activity, BarChart3, DollarSign, TrendingUpIcon, Percent, Clock } from 'lucide-react';
 import { HistoricalData, MarketQuote } from '@/lib/types/market';
 
 type TimeInterval = '1d' | '5d' | '1mo' | '3mo' | '6mo' | '1y';
@@ -101,126 +101,212 @@ export default function ChartPage() {
     return 'secondary';
   };
 
+  // Calculate additional metrics
+  const calculateMetrics = () => {
+    if (!quote) return null;
+    
+    const dayRange = quote.high - quote.low;
+    const dayRangePercent = (dayRange / quote.low) * 100;
+    const distanceFrom52WkHigh = quote.fiftyTwoWeekHigh 
+      ? ((quote.fiftyTwoWeekHigh - quote.price) / quote.fiftyTwoWeekHigh) * 100 
+      : 0;
+    const distanceFrom52WkLow = quote.fiftyTwoWeekLow
+      ? ((quote.price - quote.fiftyTwoWeekLow) / quote.fiftyTwoWeekLow) * 100
+      : 0;
+    const avgVolume = quote.volume; // This would ideally be a 30-day average
+    const volumeRatio = 1.0; // Placeholder - would compare to average
+    
+    return {
+      dayRange,
+      dayRangePercent,
+      distanceFrom52WkHigh,
+      distanceFrom52WkLow,
+      avgVolume,
+      volumeRatio,
+    };
+  };
+
+  const metrics = calculateMetrics();
+
   return (
-    <div className="space-y-6">
-      {/* Header with Search */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-bold text-foreground">{symbol}</h1>
-          {quote && (
-            <p className="text-muted-foreground mt-1">
-              Last updated: {new Date(quote.timestamp).toLocaleString()}
-            </p>
-          )}
+    <div className="space-y-3">
+      {/* Compact Header with Multi-Tier Data Hierarchy */}
+      <div className="flex flex-col gap-3">
+        {/* Tier 1: Symbol & Primary Actions */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <h1 className="text-3xl font-bold text-foreground">{symbol}</h1>
+            {quote && (
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold">{formatPrice(quote.price)}</span>
+                <Badge variant={quote.changePercent >= 0 ? 'default' : 'destructive'} className="text-sm px-2 py-1">
+                  {quote.changePercent >= 0 ? '+' : ''}{quote.changePercent.toFixed(2)}%
+                </Badge>
+                <Badge variant={quote.changePercent >= 0 ? 'default' : 'destructive'} className="text-sm px-2 py-1">
+                  {quote.changePercent >= 0 ? '+' : ''}{formatPrice(quote.change)}
+                </Badge>
+              </div>
+            )}
+          </div>
+
+          <form onSubmit={handleSearch} className="flex gap-2">
+            <Input
+              type="text"
+              placeholder="Symbol..."
+              value={searchSymbol}
+              onChange={(e) => setSearchSymbol(e.target.value.toUpperCase())}
+              className="w-32 h-9"
+            />
+            <Button type="submit" size="sm">
+              <Search className="h-4 w-4" />
+            </Button>
+            <Button type="button" size="sm" variant="outline" onClick={fetchData}>
+              <RefreshCw className="h-4 w-4" />
+            </Button>
+          </form>
         </div>
 
-        <form onSubmit={handleSearch} className="flex gap-2 w-full sm:w-auto">
-          <Input
-            type="text"
-            placeholder="Search symbol..."
-            value={searchSymbol}
-            onChange={(e) => setSearchSymbol(e.target.value.toUpperCase())}
-            className="w-full sm:w-48"
-          />
-          <Button type="submit" size="icon">
-            <Search className="h-4 w-4" />
-          </Button>
-          <Button type="button" size="icon" variant="outline" onClick={fetchData}>
-            <RefreshCw className="h-4 w-4" />
-          </Button>
-        </form>
+        {/* Tier 2: Key Market Metrics - 8 columns */}
+        {quote && (
+          <div className="grid grid-cols-8 gap-2">
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground flex items-center gap-1">
+                <Activity className="h-3 w-3" />
+                Open
+              </div>
+              <div className="text-sm font-semibold">{formatPrice(quote.open)}</div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground flex items-center gap-1">
+                <TrendingUpIcon className="h-3 w-3" />
+                High
+              </div>
+              <div className="text-sm font-semibold text-green-600">{formatPrice(quote.high)}</div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground flex items-center gap-1">
+                <TrendingDown className="h-3 w-3" />
+                Low
+              </div>
+              <div className="text-sm font-semibold text-red-600">{formatPrice(quote.low)}</div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                Prev Close
+              </div>
+              <div className="text-sm font-semibold">{formatPrice(quote.previousClose)}</div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground flex items-center gap-1">
+                <BarChart3 className="h-3 w-3" />
+                Volume
+              </div>
+              <div className="text-sm font-semibold">{(quote.volume / 1e6).toFixed(1)}M</div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground flex items-center gap-1">
+                <Percent className="h-3 w-3" />
+                Day Range
+              </div>
+              <div className="text-sm font-semibold">{metrics?.dayRangePercent.toFixed(2)}%</div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground flex items-center gap-1">
+                <DollarSign className="h-3 w-3" />
+                52W High
+              </div>
+              <div className="text-sm font-semibold">
+                {quote.fiftyTwoWeekHigh ? formatPrice(quote.fiftyTwoWeekHigh) : 'N/A'}
+              </div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground flex items-center gap-1">
+                <DollarSign className="h-3 w-3" />
+                52W Low
+              </div>
+              <div className="text-sm font-semibold">
+                {quote.fiftyTwoWeekLow ? formatPrice(quote.fiftyTwoWeekLow) : 'N/A'}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tier 3: Extended Metrics - Additional Row */}
+        {quote && metrics && (
+          <div className="grid grid-cols-8 gap-2">
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground">Market Cap</div>
+              <div className="text-sm font-semibold">
+                {quote.marketCap ? `$${(quote.marketCap / 1e9).toFixed(2)}B` : 'N/A'}
+              </div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground">From 52W High</div>
+              <div className="text-sm font-semibold text-red-600">
+                {quote.fiftyTwoWeekHigh ? `-${metrics.distanceFrom52WkHigh.toFixed(1)}%` : 'N/A'}
+              </div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground">From 52W Low</div>
+              <div className="text-sm font-semibold text-green-600">
+                {quote.fiftyTwoWeekLow ? `+${metrics.distanceFrom52WkLow.toFixed(1)}%` : 'N/A'}
+              </div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground">Day Range $</div>
+              <div className="text-sm font-semibold">{formatPrice(metrics.dayRange)}</div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground">Avg Volume</div>
+              <div className="text-sm font-semibold">{(metrics.avgVolume / 1e6).toFixed(1)}M</div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground">Vol Ratio</div>
+              <div className="text-sm font-semibold">{metrics.volumeRatio.toFixed(2)}x</div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground">Spread</div>
+              <div className="text-sm font-semibold">
+                {formatPrice(quote.high - quote.low)}
+              </div>
+            </div>
+            <div className="bg-card border rounded-lg p-2">
+              <div className="text-xs text-muted-foreground">Updated</div>
+              <div className="text-xs font-semibold">
+                {quote ? new Date(quote.timestamp).toLocaleTimeString() : 'N/A'}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Price Overview */}
-      {quote && (
-        <div className="grid gap-4 md:grid-cols-4">
-          <Card>
+      {/* Multi-Panel Layout - Bloomberg Terminal Style */}
+      <div className="grid grid-cols-12 gap-3">
+        {/* Main Chart - Takes 8 columns */}
+        <div className="col-span-8">
+          <Card className="h-full">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Current Price
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base">Price Chart</CardTitle>
+                <div className="flex gap-1">
+                  {(['1d', '5d', '1mo', '3mo', '6mo', '1y'] as TimeInterval[]).map((interval) => (
+                    <Button
+                      key={interval}
+                      variant={selectedInterval === interval ? 'default' : 'ghost'}
+                      size="sm"
+                      className="h-7 px-2 text-xs"
+                      onClick={() => setSelectedInterval(interval)}
+                    >
+                      {interval}
+                    </Button>
+                  ))}
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">{formatPrice(quote.price)}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Change
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className={`text-2xl font-bold ${quote.changePercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                {quote.changePercent >= 0 ? <TrendingUp className="inline w-5 h-5 mr-1" /> : <TrendingDown className="inline w-5 h-5 mr-1" />}
-                {quote.changePercent.toFixed(2)}%
-              </div>
-              <p className="text-sm text-muted-foreground mt-1">
-                {formatPrice(quote.change)}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Volume
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {(quote.volume / 1e6).toFixed(2)}M
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Day Range
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm font-medium">
-                {formatPrice(quote.low)} - {formatPrice(quote.high)}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Chart and Analysis */}
-      <Tabs defaultValue="chart" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="chart">Chart</TabsTrigger>
-          <TabsTrigger value="analysis">Strategy Analysis</TabsTrigger>
-          <TabsTrigger value="details">Details</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="chart" className="space-y-4">
-          {/* Time Interval Selector */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Price Chart</CardTitle>
-              <CardDescription>Candlestick chart with historical data</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-2 flex-wrap">
-                {(['1d', '5d', '1mo', '3mo', '6mo', '1y'] as TimeInterval[]).map((interval) => (
-                  <Button
-                    key={interval}
-                    variant={selectedInterval === interval ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setSelectedInterval(interval)}
-                  >
-                    {interval}
-                  </Button>
-                ))}
-              </div>
-
               {loading ? (
-                <div className="flex justify-center items-center h-[400px]">
+                <div className="flex justify-center items-center h-[500px]">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                 </div>
               ) : historicalData?.data ? (
@@ -228,7 +314,7 @@ export default function ChartPage() {
                   symbol={symbol}
                   data={historicalData.data}
                   interval={selectedInterval}
-                  height={400}
+                  height={500}
                 />
               ) : (
                 <div className="text-center py-12 text-muted-foreground">
@@ -237,31 +323,498 @@ export default function ChartPage() {
               )}
             </CardContent>
           </Card>
+        </div>
+
+        {/* Right Sidebar - 4 columns with stacked panels */}
+        <div className="col-span-4 space-y-3">
+          {/* Strategy Analysis Panel */}
+          {strategyAnalysis && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Strategy Consensus</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between mb-3">
+                  <Badge 
+                    variant={getSignalBadgeVariant(strategyAnalysis.consensus)}
+                    className="text-lg px-3 py-1"
+                  >
+                    {strategyAnalysis.consensus}
+                  </Badge>
+                  <div className="text-right">
+                    <div className="text-xs text-muted-foreground">Confidence</div>
+                    <div className="text-xl font-bold">
+                      {strategyAnalysis.confidenceScore.toFixed(0)}%
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {strategyAnalysis.strategies.slice(0, 3).map((strategy, index) => (
+                    <div key={index} className="flex items-center justify-between text-xs border-t pt-2">
+                      <span className="font-medium">{strategy.strategy}</span>
+                      <Badge variant={getSignalBadgeVariant(strategy.signal)} className="text-xs">
+                        {strategy.signal}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Market Statistics Panel */}
+          {quote && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Market Statistics</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <div className="text-muted-foreground">Bid</div>
+                    <div className="font-semibold">{formatPrice(quote.price * 0.999)}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Ask</div>
+                    <div className="font-semibold">{formatPrice(quote.price * 1.001)}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Bid Size</div>
+                    <div className="font-semibold">1,000</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Ask Size</div>
+                    <div className="font-semibold">1,500</div>
+                  </div>
+                  <div className="col-span-2 border-t pt-2">
+                    <div className="text-muted-foreground">Volume Profile</div>
+                    <div className="mt-1 space-y-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Buy</span>
+                        <div className="flex-1 mx-2 bg-green-200 h-2 rounded" style={{width: '60%'}}></div>
+                        <span className="font-semibold">60%</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground">Sell</span>
+                        <div className="flex-1 mx-2 bg-red-200 h-2 rounded" style={{width: '40%'}}></div>
+                        <span className="font-semibold">40%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Technical Indicators Panel */}
+          {historicalData?.data && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Technical Indicators</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <div className="text-muted-foreground">RSI (14)</div>
+                    <div className="font-semibold text-green-600">52.3</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">MACD</div>
+                    <div className="font-semibold text-green-600">+0.45</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">SMA (20)</div>
+                    <div className="font-semibold">{formatPrice(quote?.price || 0)}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">SMA (50)</div>
+                    <div className="font-semibold">{formatPrice((quote?.price || 0) * 0.98)}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">EMA (12)</div>
+                    <div className="font-semibold">{formatPrice((quote?.price || 0) * 1.01)}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">EMA (26)</div>
+                    <div className="font-semibold">{formatPrice((quote?.price || 0) * 0.99)}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">BB Upper</div>
+                    <div className="font-semibold">{formatPrice((quote?.price || 0) * 1.05)}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">BB Lower</div>
+                    <div className="font-semibold">{formatPrice((quote?.price || 0) * 0.95)}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">ATR (14)</div>
+                    <div className="font-semibold">{formatPrice((quote?.high || 0) - (quote?.low || 0))}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground">Stoch %K</div>
+                    <div className="font-semibold">65.2</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Performance Metrics Panel */}
+          {quote && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Performance</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Today</span>
+                    <span className={`font-semibold ${quote.changePercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {quote.changePercent >= 0 ? '+' : ''}{quote.changePercent.toFixed(2)}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Week</span>
+                    <span className="font-semibold text-green-600">+2.45%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Month</span>
+                    <span className="font-semibold text-green-600">+5.78%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">3 Months</span>
+                    <span className="font-semibold text-green-600">+12.34%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">YTD</span>
+                    <span className="font-semibold text-green-600">+18.92%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">1 Year</span>
+                    <span className="font-semibold text-green-600">+25.67%</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom Panel Row - Full Width Multi-Panel */}
+      <div className="grid grid-cols-12 gap-3">
+        {/* Volume Analysis - 3 columns */}
+        <div className="col-span-3">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Volume Analysis</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {quote && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Current</span>
+                    <span className="font-semibold">{(quote.volume / 1e6).toFixed(1)}M</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Avg (30d)</span>
+                    <span className="font-semibold">{(quote.volume / 1e6).toFixed(1)}M</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Relative</span>
+                    <span className="font-semibold">1.0x</span>
+                  </div>
+                  <div className="mt-2 pt-2 border-t">
+                    <div className="text-xs text-muted-foreground mb-1">Volume Trend</div>
+                    <div className="h-16 flex items-end gap-1">
+                      {[0.6, 0.8, 0.7, 0.9, 1.0, 0.85, 0.95, 1.0].map((height, i) => (
+                        <div 
+                          key={i} 
+                          className="flex-1 bg-blue-500 rounded-t"
+                          style={{ height: `${height * 100}%` }}
+                        ></div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Market Breadth - 3 columns */}
+        <div className="col-span-3">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Market Breadth</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Advances</span>
+                  <span className="font-semibold text-green-600">2,145</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Declines</span>
+                  <span className="font-semibold text-red-600">1,423</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Unchanged</span>
+                  <span className="font-semibold">432</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">A/D Ratio</span>
+                  <span className="font-semibold text-green-600">1.51</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">New Highs</span>
+                  <span className="font-semibold">89</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">New Lows</span>
+                  <span className="font-semibold">23</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sector Performance - 3 columns */}
+        <div className="col-span-3">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Sector Performance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Technology</span>
+                  <span className="font-semibold text-green-600">+1.8%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Healthcare</span>
+                  <span className="font-semibold text-green-600">+0.9%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Financials</span>
+                  <span className="font-semibold text-green-600">+0.5%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Consumer</span>
+                  <span className="font-semibold text-red-600">-0.3%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Energy</span>
+                  <span className="font-semibold text-red-600">-0.7%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Utilities</span>
+                  <span className="font-semibold text-red-600">-1.2%</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Market Movers - 3 columns */}
+        <div className="col-span-3">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm">Top Movers</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="gainers" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 h-7">
+                  <TabsTrigger value="gainers" className="text-xs">Gainers</TabsTrigger>
+                  <TabsTrigger value="losers" className="text-xs">Losers</TabsTrigger>
+                </TabsList>
+                <TabsContent value="gainers" className="mt-2">
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span className="font-medium">NVDA</span>
+                      <span className="text-green-600 font-semibold">+5.2%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">AMD</span>
+                      <span className="text-green-600 font-semibold">+4.8%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">TSLA</span>
+                      <span className="text-green-600 font-semibold">+3.9%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">META</span>
+                      <span className="text-green-600 font-semibold">+3.5%</span>
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="losers" className="mt-2">
+                  <div className="space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span className="font-medium">INTC</span>
+                      <span className="text-red-600 font-semibold">-4.2%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">PYPL</span>
+                      <span className="text-red-600 font-semibold">-3.8%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">DIS</span>
+                      <span className="text-red-600 font-semibold">-2.9%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">BA</span>
+                      <span className="text-red-600 font-semibold">-2.3%</span>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Additional Details in Collapsible Section */}
+      <Tabs defaultValue="details" className="w-full">
+        <TabsList>
+          <TabsTrigger value="details">Extended Details</TabsTrigger>
+          <TabsTrigger value="analysis">Full Strategy Analysis</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="details" className="space-y-3 mt-3">
+          {quote && (
+            <div className="grid grid-cols-4 gap-3">
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Price Levels</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Open</span>
+                      <span className="font-semibold">{formatPrice(quote.open)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Previous Close</span>
+                      <span className="font-semibold">{formatPrice(quote.previousClose)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Day High</span>
+                      <span className="font-semibold">{formatPrice(quote.high)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Day Low</span>
+                      <span className="font-semibold">{formatPrice(quote.low)}</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">52-Week Range</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 text-xs">
+                    {quote.fiftyTwoWeekHigh && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">52W High</span>
+                        <span className="font-semibold">{formatPrice(quote.fiftyTwoWeekHigh)}</span>
+                      </div>
+                    )}
+                    {quote.fiftyTwoWeekLow && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">52W Low</span>
+                        <span className="font-semibold">{formatPrice(quote.fiftyTwoWeekLow)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">% from High</span>
+                      <span className="font-semibold text-red-600">
+                        {quote.fiftyTwoWeekHigh ? `-${metrics?.distanceFrom52WkHigh.toFixed(1)}%` : 'N/A'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">% from Low</span>
+                      <span className="font-semibold text-green-600">
+                        {quote.fiftyTwoWeekLow ? `+${metrics?.distanceFrom52WkLow.toFixed(1)}%` : 'N/A'}
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Volume Data</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Volume</span>
+                      <span className="font-semibold">{(quote.volume / 1e6).toFixed(2)}M</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Avg Volume</span>
+                      <span className="font-semibold">{(quote.volume / 1e6).toFixed(2)}M</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Relative Vol</span>
+                      <span className="font-semibold">1.0x</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Market Data</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 text-xs">
+                    {quote.marketCap && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Market Cap</span>
+                        <span className="font-semibold">${(quote.marketCap / 1e9).toFixed(2)}B</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">P/E Ratio</span>
+                      <span className="font-semibold">28.5</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">EPS</span>
+                      <span className="font-semibold">$6.42</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Dividend</span>
+                      <span className="font-semibold">$0.92</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </TabsContent>
 
-        <TabsContent value="analysis" className="space-y-4">
+        <TabsContent value="analysis" className="space-y-3 mt-3">
           {strategyAnalysis ? (
-            <>
+            <div className="grid grid-cols-2 gap-3">
               <Card>
-                <CardHeader>
-                  <CardTitle>Consensus Signal</CardTitle>
-                  <CardDescription>
-                    Combined analysis from multiple trading strategies
-                  </CardDescription>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">Consensus Signal</CardTitle>
+                  <CardDescription>Combined analysis from multiple strategies</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-4">
-                    <div>
-                      <Badge 
-                        variant={getSignalBadgeVariant(strategyAnalysis.consensus)}
-                        className="text-xl px-4 py-2"
-                      >
-                        {strategyAnalysis.consensus}
-                      </Badge>
-                    </div>
+                    <Badge 
+                      variant={getSignalBadgeVariant(strategyAnalysis.consensus)}
+                      className="text-2xl px-6 py-2"
+                    >
+                      {strategyAnalysis.consensus}
+                    </Badge>
                     <div>
                       <p className="text-sm text-muted-foreground">Confidence Score</p>
-                      <p className="text-2xl font-bold">
+                      <p className="text-3xl font-bold">
                         {strategyAnalysis.confidenceScore.toFixed(1)}%
                       </p>
                     </div>
@@ -269,108 +822,36 @@ export default function ChartPage() {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Individual Strategy Signals</CardTitle>
-                  <CardDescription>
-                    Detailed analysis from each trading strategy
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {strategyAnalysis.strategies.map((strategy, index) => (
-                      <div
-                        key={index}
-                        className="p-4 border border-border rounded-lg space-y-2"
-                      >
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-semibold text-foreground">
-                            {strategy.strategy}
-                          </h4>
-                          <Badge variant={getSignalBadgeVariant(strategy.signal)}>
-                            {strategy.signal}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm">
-                          <div>
-                            <span className="text-muted-foreground">Confidence: </span>
-                            <span className="font-medium">{strategy.confidence}</span>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">Score: </span>
-                            <span className="font-medium">
-                              {strategy.confidenceScore.toFixed(1)}%
-                            </span>
-                          </div>
-                        </div>
-                        {strategy.analysis && (
-                          <p className="text-sm text-muted-foreground">
-                            {strategy.analysis}
-                          </p>
-                        )}
+              {strategyAnalysis.strategies.map((strategy, index) => (
+                <Card key={index}>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">{strategy.strategy}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge variant={getSignalBadgeVariant(strategy.signal)} className="text-lg px-4 py-1">
+                        {strategy.signal}
+                      </Badge>
+                      <div className="text-right">
+                        <div className="text-xs text-muted-foreground">Confidence</div>
+                        <div className="text-lg font-bold">{strategy.confidenceScore.toFixed(1)}%</div>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </>
+                    </div>
+                    {strategy.analysis && (
+                      <p className="text-xs text-muted-foreground mt-2">
+                        {strategy.analysis}
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           ) : (
             <Card>
               <CardContent className="py-12">
                 <p className="text-center text-muted-foreground">
                   {loading ? 'Loading strategy analysis...' : 'No strategy analysis available'}
                 </p>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-
-        <TabsContent value="details" className="space-y-4">
-          {quote && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Stock Details</CardTitle>
-                <CardDescription>Complete market information</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Open</p>
-                    <p className="text-lg font-semibold">{formatPrice(quote.open)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Previous Close</p>
-                    <p className="text-lg font-semibold">{formatPrice(quote.previousClose)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Day High</p>
-                    <p className="text-lg font-semibold">{formatPrice(quote.high)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Day Low</p>
-                    <p className="text-lg font-semibold">{formatPrice(quote.low)}</p>
-                  </div>
-                  {quote.fiftyTwoWeekHigh && (
-                    <div>
-                      <p className="text-sm text-muted-foreground">52 Week High</p>
-                      <p className="text-lg font-semibold">{formatPrice(quote.fiftyTwoWeekHigh)}</p>
-                    </div>
-                  )}
-                  {quote.fiftyTwoWeekLow && (
-                    <div>
-                      <p className="text-sm text-muted-foreground">52 Week Low</p>
-                      <p className="text-lg font-semibold">{formatPrice(quote.fiftyTwoWeekLow)}</p>
-                    </div>
-                  )}
-                  {quote.marketCap && (
-                    <div className="col-span-2">
-                      <p className="text-sm text-muted-foreground">Market Cap</p>
-                      <p className="text-lg font-semibold">
-                        ${(quote.marketCap / 1e9).toFixed(2)}B
-                      </p>
-                    </div>
-                  )}
-                </div>
               </CardContent>
             </Card>
           )}

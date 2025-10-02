@@ -59,9 +59,9 @@ export const inter = localFont({
   fallback: [
     '-apple-system',
     'BlinkMacSystemFont',
-    '"Segoe UI"',
+    'Segoe UI',
     'Roboto',
-    '"Helvetica Neue"',
+    'Helvetica Neue',
     'Arial',
     'sans-serif'
   ],
@@ -124,11 +124,11 @@ export const jetbrainsMono = localFont({
   variable: '--font-jetbrains-mono',
   display: 'swap',
   fallback: [
-    '"SF Mono"',
+    'SF Mono',
     'Monaco',
     'Menlo',
     'Consolas',
-    '"Courier New"',
+    'Courier New',
     'monospace'
   ],
 });
