@@ -4,10 +4,10 @@ import { useState } from 'react';
 
 export default function DemoPage() {
   const [symbol, setSymbol] = useState('AAPL');
-  const [quoteData, setQuoteData] = useState<unknown>(null);
-  const [historicalData, setHistoricalData] = useState<unknown>(null);
-  const [strategyData, setStrategyData] = useState<unknown>(null);
-  const [statsData, setStatsData] = useState<unknown>(null);
+  const [quoteData, setQuoteData] = useState<string | null>(null);
+  const [historicalData, setHistoricalData] = useState<string | null>(null);
+  const [strategyData, setStrategyData] = useState<string | null>(null);
+  const [statsData, setStatsData] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,7 +17,7 @@ export default function DemoPage() {
     try {
       const response = await fetch(`/api/quote?symbol=${symbol}`);
       const data = await response.json();
-      setQuoteData(data);
+      setQuoteData(JSON.stringify(data, null, 2));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch quote');
     } finally {
@@ -31,7 +31,7 @@ export default function DemoPage() {
     try {
       const response = await fetch(`/api/historical?symbol=${symbol}&period=1mo&interval=1d`);
       const data = await response.json();
-      setHistoricalData(data);
+      setHistoricalData(JSON.stringify(data, null, 2));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch historical data');
     } finally {
@@ -45,7 +45,7 @@ export default function DemoPage() {
     try {
       const response = await fetch(`/api/strategy?symbol=${symbol}&period=3mo&interval=1d`);
       const data = await response.json();
-      setStrategyData(data);
+      setStrategyData(JSON.stringify(data, null, 2));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch strategy analysis');
     } finally {
@@ -59,7 +59,7 @@ export default function DemoPage() {
     try {
       const response = await fetch('/api/stats');
       const data = await response.json();
-      setStatsData(data);
+      setStatsData(JSON.stringify(data, null, 2));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch stats');
     } finally {
@@ -139,7 +139,7 @@ export default function DemoPage() {
             <div className="p-6 bg-card rounded-lg border border-border">
               <h2 className="text-2xl font-bold mb-4 text-card-foreground">Quote Data</h2>
               <pre className="bg-muted p-4 rounded overflow-auto text-sm text-muted-foreground">
-                {JSON.stringify(quoteData, null, 2)}
+                {quoteData}
               </pre>
             </div>
           )}
@@ -149,7 +149,7 @@ export default function DemoPage() {
             <div className="p-6 bg-card rounded-lg border border-border">
               <h2 className="text-2xl font-bold mb-4 text-card-foreground">Historical Data</h2>
               <pre className="bg-muted p-4 rounded overflow-auto text-sm text-muted-foreground max-h-96">
-                {JSON.stringify(historicalData, null, 2)}
+                {historicalData}
               </pre>
             </div>
           )}
@@ -159,7 +159,7 @@ export default function DemoPage() {
             <div className="p-6 bg-card rounded-lg border border-border lg:col-span-2">
               <h2 className="text-2xl font-bold mb-4 text-card-foreground">Strategy Analysis</h2>
               <pre className="bg-muted p-4 rounded overflow-auto text-sm text-muted-foreground max-h-96">
-                {JSON.stringify(strategyData, null, 2)}
+                {strategyData}
               </pre>
             </div>
           )}
@@ -169,7 +169,7 @@ export default function DemoPage() {
             <div className="p-6 bg-card rounded-lg border border-border lg:col-span-2">
               <h2 className="text-2xl font-bold mb-4 text-card-foreground">System Statistics</h2>
               <pre className="bg-muted p-4 rounded overflow-auto text-sm text-muted-foreground">
-                {JSON.stringify(statsData, null, 2)}
+                {statsData}
               </pre>
             </div>
           )}

@@ -93,7 +93,7 @@ export class PersistenceLayer {
               type: (doc as { type: string }).type, 
               symbol: (doc as { symbol: string }).symbol 
             },
-            update: { $set: doc },
+            update: { $set: doc as Record<string, unknown> },
             upsert: true,
           },
         }));

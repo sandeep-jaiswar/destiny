@@ -154,10 +154,17 @@ export class MarketDataService {
       // Fetch from Yahoo Finance
       const result = await retryWithBackoff(
         async () => {
+          // Map our interval types to yahoo-finance2 accepted values
+          let yahooInterval: '1d' | '1wk' | '1mo' = '1d';
+          if (interval === '1wk') yahooInterval = '1wk';
+          else if (interval === '1mo') yahooInterval = '1mo';
+          // For intraday intervals (1m, 5m, etc.), yahoo-finance2 doesn't support them in historical
+          // so we default to 1d
+
           const queryOptions = {
             period1: this.getPeriodStartDate(period),
             period2: new Date(),
-            interval: interval as string,
+            interval: yahooInterval,
           };
 
           return await yahooFinance.historical(normalizedSymbol, queryOptions);
