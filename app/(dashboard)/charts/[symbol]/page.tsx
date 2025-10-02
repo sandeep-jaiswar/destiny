@@ -39,6 +39,24 @@ export default function ChartPage() {
   const [selectedInterval, setSelectedInterval] = useState<TimeInterval>('1mo');
   const [loading, setLoading] = useState(true);
   const [searchSymbol, setSearchSymbol] = useState(symbol);
+  const [useMockData, setUseMockData] = useState(false);
+
+  // Mock data for demo purposes
+  const mockQuote: MarketQuote = {
+    symbol: symbol,
+    price: 185.92,
+    change: 2.34,
+    changePercent: 1.27,
+    volume: 45678900,
+    open: 184.50,
+    high: 186.45,
+    low: 183.80,
+    previousClose: 183.58,
+    timestamp: new Date(),
+    marketCap: 2847000000000,
+    fiftyTwoWeekHigh: 199.62,
+    fiftyTwoWeekLow: 164.08,
+  };
 
   useEffect(() => {
     fetchData();
@@ -53,6 +71,11 @@ export default function ChartPage() {
       const quoteData = await quoteRes.json();
       if (quoteData.success) {
         setQuote(quoteData.data);
+        setUseMockData(false);
+      } else {
+        // Use mock data if API fails
+        setQuote(mockQuote);
+        setUseMockData(true);
       }
 
       // Fetch historical data
@@ -62,6 +85,27 @@ export default function ChartPage() {
       const historicalJson = await historicalRes.json();
       if (historicalJson.success) {
         setHistoricalData(historicalJson.data);
+      } else if (useMockData) {
+        // Generate mock historical data
+        const mockHistoricalData: HistoricalData = {
+          symbol: symbol,
+          period: selectedInterval,
+          interval: '1d',
+          data: Array.from({ length: 30 }, (_, i) => {
+            const date = new Date();
+            date.setDate(date.getDate() - (30 - i));
+            const basePrice = 180 + Math.random() * 10;
+            return {
+              date,
+              open: basePrice,
+              high: basePrice + Math.random() * 3,
+              low: basePrice - Math.random() * 3,
+              close: basePrice + (Math.random() - 0.5) * 2,
+              volume: 40000000 + Math.random() * 20000000,
+            };
+          }),
+        };
+        setHistoricalData(mockHistoricalData);
       }
 
       // Fetch strategy analysis
@@ -71,6 +115,37 @@ export default function ChartPage() {
       const strategyJson = await strategyRes.json();
       if (strategyJson.success) {
         setStrategyAnalysis(strategyJson.data);
+      } else if (useMockData) {
+        // Mock strategy analysis
+        const mockStrategy: StrategyConsensus = {
+          symbol: symbol,
+          consensus: 'BUY',
+          confidenceScore: 72.5,
+          strategies: [
+            {
+              strategy: 'Moving Average Crossover',
+              signal: 'BUY',
+              confidence: 'High',
+              confidenceScore: 78.2,
+              analysis: 'Short-term MA crossed above long-term MA, bullish signal',
+            },
+            {
+              strategy: 'RSI Strategy',
+              signal: 'BUY',
+              confidence: 'Medium',
+              confidenceScore: 65.8,
+              analysis: 'RSI at 52.3, indicating neutral to slightly bullish momentum',
+            },
+            {
+              strategy: 'MACD Strategy',
+              signal: 'BUY',
+              confidence: 'High',
+              confidenceScore: 73.5,
+              analysis: 'MACD line above signal line with positive histogram',
+            },
+          ],
+        };
+        setStrategyAnalysis(mockStrategy);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
