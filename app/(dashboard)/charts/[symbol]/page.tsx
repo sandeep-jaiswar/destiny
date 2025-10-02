@@ -750,56 +750,56 @@ export default function ChartPage() {
 
       {/* Additional Details in Collapsible Section */}
       <Tabs defaultValue="details" className="w-full">
-        <TabsList>
+        <TabsList className="w-full grid grid-cols-2">
           <TabsTrigger value="details">Extended Details</TabsTrigger>
           <TabsTrigger value="analysis">Full Strategy Analysis</TabsTrigger>
         </TabsList>
 
         <TabsContent value="details" className="space-y-3 mt-3">
           {quote && (
-            <div className="grid grid-cols-4 gap-3">
-              <Card>
-                <CardHeader className="pb-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <Card className="h-full">
+                <CardHeader className="pb-3">
                   <CardTitle className="text-sm">Price Levels</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 text-xs">
+                <CardContent className="px-4 pb-4">
+                  <div className="space-y-2.5 text-xs">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Open</span>
-                      <span className="font-semibold">{formatPrice(quote.open)}</span>
+                      <span className="font-semibold text-foreground">{formatPrice(quote.open)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Previous Close</span>
-                      <span className="font-semibold">{formatPrice(quote.previousClose)}</span>
+                      <span className="font-semibold text-foreground">{formatPrice(quote.previousClose)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Day High</span>
-                      <span className="font-semibold">{formatPrice(quote.high)}</span>
+                      <span className="font-semibold text-foreground">{formatPrice(quote.high)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Day Low</span>
-                      <span className="font-semibold">{formatPrice(quote.low)}</span>
+                      <span className="font-semibold text-foreground">{formatPrice(quote.low)}</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
+              <Card className="h-full">
+                <CardHeader className="pb-3">
                   <CardTitle className="text-sm">52-Week Range</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 text-xs">
+                <CardContent className="px-4 pb-4">
+                  <div className="space-y-2.5 text-xs">
                     {quote.fiftyTwoWeekHigh && (
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">52W High</span>
-                        <span className="font-semibold">{formatPrice(quote.fiftyTwoWeekHigh)}</span>
+                        <span className="font-semibold text-foreground">{formatPrice(quote.fiftyTwoWeekHigh)}</span>
                       </div>
                     )}
                     {quote.fiftyTwoWeekLow && (
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">52W Low</span>
-                        <span className="font-semibold">{formatPrice(quote.fiftyTwoWeekLow)}</span>
+                        <span className="font-semibold text-foreground">{formatPrice(quote.fiftyTwoWeekLow)}</span>
                       </div>
                     )}
                     <div className="flex justify-between">
@@ -818,51 +818,51 @@ export default function ChartPage() {
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
+              <Card className="h-full">
+                <CardHeader className="pb-3">
                   <CardTitle className="text-sm">Volume Data</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 text-xs">
+                <CardContent className="px-4 pb-4">
+                  <div className="space-y-2.5 text-xs">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Volume</span>
-                      <span className="font-semibold">{(quote.volume / 1e6).toFixed(2)}M</span>
+                      <span className="font-semibold text-foreground">{(quote.volume / 1e6).toFixed(2)}M</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Avg Volume</span>
-                      <span className="font-semibold">{(quote.volume / 1e6).toFixed(2)}M</span>
+                      <span className="font-semibold text-foreground">{(quote.volume / 1e6).toFixed(2)}M</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Relative Vol</span>
-                      <span className="font-semibold">1.0x</span>
+                      <span className="font-semibold text-foreground">1.0x</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
+              <Card className="h-full">
+                <CardHeader className="pb-3">
                   <CardTitle className="text-sm">Market Data</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 text-xs">
+                <CardContent className="px-4 pb-4">
+                  <div className="space-y-2.5 text-xs">
                     {quote.marketCap && (
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Market Cap</span>
-                        <span className="font-semibold">${(quote.marketCap / 1e9).toFixed(2)}B</span>
+                        <span className="font-semibold text-foreground">${(quote.marketCap / 1e9).toFixed(2)}B</span>
                       </div>
                     )}
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">P/E Ratio</span>
-                      <span className="font-semibold">28.5</span>
+                      <span className="font-semibold text-foreground">28.5</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">EPS</span>
-                      <span className="font-semibold">$6.42</span>
+                      <span className="font-semibold text-foreground">$6.42</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Dividend</span>
-                      <span className="font-semibold">$0.92</span>
+                      <span className="font-semibold text-foreground">$0.92</span>
                     </div>
                   </div>
                 </CardContent>
@@ -873,14 +873,14 @@ export default function ChartPage() {
 
         <TabsContent value="analysis" className="space-y-3 mt-3">
           {strategyAnalysis ? (
-            <div className="grid grid-cols-2 gap-3">
-              <Card>
-                <CardHeader className="pb-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <Card className="md:col-span-2">
+                <CardHeader className="pb-3">
                   <CardTitle className="text-base">Consensus Signal</CardTitle>
                   <CardDescription>Combined analysis from multiple strategies</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-4">
+                <CardContent className="px-4 pb-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                     <Badge 
                       variant={getSignalBadgeVariant(strategyAnalysis.consensus)}
                       className="text-2xl px-6 py-2"
