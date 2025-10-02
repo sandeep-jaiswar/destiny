@@ -14,6 +14,14 @@ export default {
   			sans: [
   				'var(--font-inter)',
                     ...defaultTheme.fontFamily.sans
+                ],
+  			mono: [
+  				'var(--font-jetbrains-mono)',
+  				'JetBrains Mono',
+  				'SF Mono',
+  				'Monaco',
+  				'Menlo',
+                    ...defaultTheme.fontFamily.mono
                 ]
   		},
   		borderRadius: {
@@ -51,6 +59,10 @@ export default {
   			destructive: {
   				DEFAULT: 'hsl(var(--destructive))',
   				foreground: 'hsl(var(--destructive-foreground))'
+  			},
+  			success: {
+  				DEFAULT: 'hsl(var(--success))',
+  				foreground: 'hsl(var(--success-foreground))'
   			},
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
