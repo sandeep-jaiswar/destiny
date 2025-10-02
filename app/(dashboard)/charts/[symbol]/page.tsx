@@ -204,16 +204,16 @@ export default function ChartPage() {
   const metrics = calculateMetrics();
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 px-2 md:px-0">
       {/* Compact Header with Multi-Tier Data Hierarchy */}
       <div className="flex flex-col gap-3">
         {/* Tier 1: Symbol & Primary Actions */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-3xl font-bold text-foreground">{symbol}</h1>
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+          <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full md:w-auto">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">{symbol}</h1>
             {quote && (
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold">{formatPrice(quote.price)}</span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xl md:text-2xl font-bold">{formatPrice(quote.price)}</span>
                 <Badge variant={quote.changePercent >= 0 ? 'default' : 'destructive'} className="text-sm px-2 py-1">
                   {quote.changePercent >= 0 ? '+' : ''}{quote.changePercent.toFixed(2)}%
                 </Badge>
@@ -224,26 +224,26 @@ export default function ChartPage() {
             )}
           </div>
 
-          <form onSubmit={handleSearch} className="flex gap-2">
+          <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto">
             <Input
               type="text"
               placeholder="Symbol..."
               value={searchSymbol}
               onChange={(e) => setSearchSymbol(e.target.value.toUpperCase())}
-              className="w-32 h-9"
+              className="w-full md:w-32 h-9"
             />
-            <Button type="submit" size="sm">
+            <Button type="submit" size="sm" className="shrink-0">
               <Search className="h-4 w-4" />
             </Button>
-            <Button type="button" size="sm" variant="outline" onClick={fetchData}>
+            <Button type="button" size="sm" variant="outline" onClick={fetchData} className="shrink-0">
               <RefreshCw className="h-4 w-4" />
             </Button>
           </form>
         </div>
 
-        {/* Tier 2: Key Market Metrics - 8 columns */}
+        {/* Tier 2: Key Market Metrics - Responsive grid */}
         {quote && (
-          <div className="grid grid-cols-8 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
             <div className="bg-card border rounded-lg p-2">
               <div className="text-xs text-muted-foreground flex items-center gap-1">
                 <Activity className="h-3 w-3" />
@@ -307,9 +307,9 @@ export default function ChartPage() {
           </div>
         )}
 
-        {/* Tier 3: Extended Metrics - Additional Row */}
+        {/* Tier 3: Extended Metrics - Responsive grid */}
         {quote && metrics && (
-          <div className="grid grid-cols-8 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
             <div className="bg-card border rounded-lg p-2">
               <div className="text-xs text-muted-foreground">Market Cap</div>
               <div className="text-sm font-semibold text-foreground">
@@ -356,15 +356,15 @@ export default function ChartPage() {
         )}
       </div>
 
-      {/* Multi-Panel Layout - Bloomberg Terminal Style */}
-      <div className="grid grid-cols-12 gap-3">
-        {/* Main Chart - Takes 8 columns */}
-        <div className="col-span-8">
+      {/* Multi-Panel Layout - Responsive */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+        {/* Main Chart - Full width on mobile, 8 columns on desktop */}
+        <div className="lg:col-span-8">
           <Card className="h-full">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
+            <CardHeader className="pb-2 px-3 pt-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <CardTitle className="text-base">Price Chart</CardTitle>
-                <div className="flex gap-1">
+                <div className="flex gap-1 flex-wrap">
                   {(['1d', '5d', '1mo', '3mo', '6mo', '1y'] as TimeInterval[]).map((interval) => (
                     <Button
                       key={interval}
@@ -379,9 +379,9 @@ export default function ChartPage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-3 pb-3">
               {loading ? (
-                <div className="flex justify-center items-center h-[500px]">
+                <div className="flex justify-center items-center h-[300px] md:h-[500px]">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                 </div>
               ) : historicalData?.data ? (
@@ -389,7 +389,7 @@ export default function ChartPage() {
                   symbol={symbol}
                   data={historicalData.data}
                   interval={selectedInterval}
-                  height={500}
+                  height={window.innerWidth < 768 ? 300 : 500}
                 />
               ) : (
                 <div className="text-center py-12 text-muted-foreground">
@@ -400,8 +400,8 @@ export default function ChartPage() {
           </Card>
         </div>
 
-        {/* Right Sidebar - 4 columns with stacked panels */}
-        <div className="col-span-4 space-y-3">
+        {/* Right Sidebar - Full width on mobile, 4 columns on desktop */}
+        <div className="lg:col-span-4 space-y-3">
           {/* Strategy Analysis Panel */}
           {strategyAnalysis && (
             <Card>
@@ -575,10 +575,10 @@ export default function ChartPage() {
         </div>
       </div>
 
-      {/* Bottom Panel Row - Full Width Multi-Panel */}
-      <div className="grid grid-cols-12 gap-3">
-        {/* Volume Analysis - 3 columns */}
-        <div className="col-span-3">
+      {/* Bottom Panel Row - Responsive grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        {/* Volume Analysis */}
+        <div className="w-full">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm">Volume Analysis</CardTitle>
@@ -616,8 +616,8 @@ export default function ChartPage() {
           </Card>
         </div>
 
-        {/* Market Breadth - 3 columns */}
-        <div className="col-span-3">
+        {/* Market Breadth */}
+        <div className="w-full">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm">Market Breadth</CardTitle>
@@ -653,8 +653,8 @@ export default function ChartPage() {
           </Card>
         </div>
 
-        {/* Sector Performance - 3 columns */}
-        <div className="col-span-3">
+        {/* Sector Performance */}
+        <div className="w-full">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm">Sector Performance</CardTitle>
@@ -690,8 +690,8 @@ export default function ChartPage() {
           </Card>
         </div>
 
-        {/* Market Movers - 3 columns */}
-        <div className="col-span-3">
+        {/* Market Movers */}
+        <div className="w-full">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm">Top Movers</CardTitle>

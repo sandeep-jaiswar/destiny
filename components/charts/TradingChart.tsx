@@ -29,8 +29,9 @@ export function TradingChart({ data, height = 400 }: TradingChartProps) {
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
 
-    // Clear canvas
-    ctx.clearRect(0, 0, rect.width, rect.height);
+    // Clear canvas with vintage sepia background
+    ctx.fillStyle = '#f4f1e8'; // Vintage paper color
+    ctx.fillRect(0, 0, rect.width, rect.height);
 
     // Calculate dimensions
     const padding = { top: 20, right: 80, bottom: 40, left: 10 };
@@ -47,8 +48,8 @@ export function TradingChart({ data, height = 400 }: TradingChartProps) {
     const candleWidth = Math.max(1, chartWidth / data.length - 2);
     const candleSpacing = chartWidth / data.length;
 
-    // Draw grid lines (horizontal)
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    // Draw grid lines (horizontal) - vintage brown
+    ctx.strokeStyle = 'rgba(139, 101, 73, 0.2)'; // Vintage sepia brown
     ctx.lineWidth = 1;
     const gridLines = 5;
     for (let i = 0; i <= gridLines; i++) {
@@ -59,7 +60,22 @@ export function TradingChart({ data, height = 400 }: TradingChartProps) {
       ctx.stroke();
     }
 
-    // Draw candlesticks
+    // Draw vertical grid lines - vintage style
+    const verticalGridCount = Math.min(8, Math.floor(data.length / 5));
+    for (let i = 0; i <= verticalGridCount; i++) {
+      const x = padding.left + (chartWidth / verticalGridCount) * i;
+      ctx.beginPath();
+      ctx.moveTo(x, padding.top);
+      ctx.lineTo(x, padding.top + chartHeight);
+      ctx.stroke();
+    }
+
+    // Draw border frame - classic vintage style
+    ctx.strokeStyle = '#8b6549'; // Vintage brown
+    ctx.lineWidth = 2;
+    ctx.strokeRect(padding.left, padding.top, chartWidth, chartHeight);
+
+    // Draw candlesticks with vintage colors
     data.forEach((candle, index) => {
       const x = padding.left + index * candleSpacing + candleSpacing / 2;
       const isGreen = candle.close >= candle.open;
@@ -70,31 +86,42 @@ export function TradingChart({ data, height = 400 }: TradingChartProps) {
       const openY = padding.top + ((maxPrice - candle.open) / priceRange) * chartHeight;
       const closeY = padding.top + ((maxPrice - candle.close) / priceRange) * chartHeight;
 
-      // Draw wick
-      ctx.strokeStyle = isGreen ? '#22c55e' : '#ef4444';
+      // Draw wick with vintage colors
+      ctx.strokeStyle = isGreen ? '#2d6e2d' : '#8b3232'; // Dark vintage green/red
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(x, highY);
       ctx.lineTo(x, lowY);
       ctx.stroke();
 
-      // Draw body
-      ctx.fillStyle = isGreen ? '#22c55e' : '#ef4444';
+      // Draw body with vintage style
       const bodyTop = Math.min(openY, closeY);
       const bodyHeight = Math.abs(closeY - openY) || 1;
-      ctx.fillRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
+      
+      if (isGreen) {
+        // Hollow vintage green candle
+        ctx.strokeStyle = '#2d6e2d';
+        ctx.fillStyle = '#e8f5e8'; // Light vintage green
+        ctx.lineWidth = 1.5;
+        ctx.fillRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
+        ctx.strokeRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
+      } else {
+        // Solid vintage red candle
+        ctx.fillStyle = '#8b3232';
+        ctx.fillRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
+      }
 
-      // Highlight hovered candle
+      // Highlight hovered candle with vintage style
       if (hoveredIndex === index) {
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.strokeStyle = 'rgba(139, 101, 73, 0.8)';
         ctx.lineWidth = 2;
         ctx.strokeRect(x - candleWidth / 2 - 2, padding.top, candleWidth + 4, chartHeight);
       }
     });
 
-    // Draw price labels on right
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-    ctx.font = '12px sans-serif';
+    // Draw price labels on right - vintage font style
+    ctx.fillStyle = '#5c4a3a'; // Vintage dark brown
+    ctx.font = 'bold 11px Georgia, serif'; // Classic serif font
     ctx.textAlign = 'left';
     for (let i = 0; i <= gridLines; i++) {
       const price = maxPrice - (priceRange / gridLines) * i;
@@ -102,8 +129,9 @@ export function TradingChart({ data, height = 400 }: TradingChartProps) {
       ctx.fillText(price.toFixed(2), rect.width - padding.right + 5, y + 4);
     }
 
-    // Draw date labels on bottom
+    // Draw date labels on bottom - vintage style
     ctx.textAlign = 'center';
+    ctx.font = 'bold 10px Georgia, serif';
     const labelInterval = Math.max(1, Math.floor(data.length / 5));
     data.forEach((candle, index) => {
       if (index % labelInterval === 0) {
@@ -144,35 +172,35 @@ export function TradingChart({ data, height = 400 }: TradingChartProps) {
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: `${height}px` }}
-        className="rounded-lg bg-card/50 cursor-crosshair"
+        className="rounded-lg border-2 border-amber-900/20 shadow-lg cursor-crosshair"
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       />
       
       {hoveredCandle && (
-        <Card className="p-4">
-          <div className="grid grid-cols-5 gap-4 text-sm">
+        <Card className="p-3 md:p-4 bg-amber-50/50 border-amber-900/20">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 md:gap-4 text-xs md:text-sm">
             <div>
-              <p className="text-muted-foreground">Date</p>
-              <p className="font-medium">
+              <p className="text-muted-foreground font-serif">Date</p>
+              <p className="font-medium font-serif">
                 {new Date(hoveredCandle.date).toLocaleDateString()}
               </p>
             </div>
             <div>
-              <p className="text-muted-foreground">Open</p>
-              <p className="font-medium">${hoveredCandle.open.toFixed(2)}</p>
+              <p className="text-muted-foreground font-serif">Open</p>
+              <p className="font-medium font-serif">${hoveredCandle.open.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-muted-foreground">High</p>
-              <p className="font-medium text-green-500">${hoveredCandle.high.toFixed(2)}</p>
+              <p className="text-muted-foreground font-serif">High</p>
+              <p className="font-medium text-green-700 font-serif">${hoveredCandle.high.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-muted-foreground">Low</p>
-              <p className="font-medium text-red-500">${hoveredCandle.low.toFixed(2)}</p>
+              <p className="text-muted-foreground font-serif">Low</p>
+              <p className="font-medium text-red-700 font-serif">${hoveredCandle.low.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-muted-foreground">Close</p>
-              <p className={`font-medium ${hoveredCandle.close >= hoveredCandle.open ? 'text-green-500' : 'text-red-500'}`}>
+              <p className="text-muted-foreground font-serif">Close</p>
+              <p className={`font-medium font-serif ${hoveredCandle.close >= hoveredCandle.open ? 'text-green-700' : 'text-red-700'}`}>
                 ${hoveredCandle.close.toFixed(2)}
               </p>
             </div>
