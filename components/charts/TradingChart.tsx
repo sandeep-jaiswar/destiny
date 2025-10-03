@@ -206,7 +206,7 @@ export function TradingChart({ data, height = 400 }: TradingChartProps) {
   const hoveredCandle = hoveredIndex !== null ? data[hoveredIndex] : null;
 
   return (
-    <div className="space-y-2">
+    <div className="relative">
       <canvas
         ref={canvasRef}
         style={{ width: '100%', height: `${height}px` }}
@@ -216,29 +216,29 @@ export function TradingChart({ data, height = 400 }: TradingChartProps) {
       />
       
       {hoveredCandle && (
-        <Card className="p-3 md:p-4 bg-gradient-to-br from-amber-50/80 to-stone-50/80 border-amber-200/60 shadow-sm">
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 md:gap-4 text-xs md:text-sm">
+        <Card className="absolute bottom-2 left-2 right-2 p-2 md:p-3 bg-white/95 dark:bg-gray-900/95 border border-gray-200 dark:border-gray-700 shadow-lg backdrop-blur-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 md:gap-3 text-xs">
             <div>
-              <p className="text-muted-foreground font-medium mb-1">Date</p>
+              <p className="text-muted-foreground font-medium mb-0.5">Date</p>
               <p className="font-semibold text-foreground">
                 {new Date(hoveredCandle.date).toLocaleDateString()}
               </p>
             </div>
             <div>
-              <p className="text-muted-foreground font-medium mb-1">Open</p>
+              <p className="text-muted-foreground font-medium mb-0.5">Open</p>
               <p className="font-semibold text-foreground">${hoveredCandle.open.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-muted-foreground font-medium mb-1">High</p>
-              <p className="font-semibold text-green-700">${hoveredCandle.high.toFixed(2)}</p>
+              <p className="text-muted-foreground font-medium mb-0.5">High</p>
+              <p className="font-semibold text-green-700 dark:text-green-500">${hoveredCandle.high.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-muted-foreground font-medium mb-1">Low</p>
-              <p className="font-semibold text-red-700">${hoveredCandle.low.toFixed(2)}</p>
+              <p className="text-muted-foreground font-medium mb-0.5">Low</p>
+              <p className="font-semibold text-red-700 dark:text-red-500">${hoveredCandle.low.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-muted-foreground font-medium mb-1">Close</p>
-              <p className={`font-semibold ${hoveredCandle.close >= hoveredCandle.open ? 'text-green-700' : 'text-red-700'}`}>
+              <p className="text-muted-foreground font-medium mb-0.5">Close</p>
+              <p className={`font-semibold ${hoveredCandle.close >= hoveredCandle.open ? 'text-green-700 dark:text-green-500' : 'text-red-700 dark:text-red-500'}`}>
                 ${hoveredCandle.close.toFixed(2)}
               </p>
             </div>
