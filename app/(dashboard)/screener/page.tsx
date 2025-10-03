@@ -95,8 +95,8 @@ export default function ScreenerPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-4xl font-bold text-foreground">Stock Screener</h1>
-        <p className="text-muted-foreground mt-1">
+        <h1 className="text-4xl font-bold text-white font-mono">Stock Screener</h1>
+        <p className="text-white/80 mt-1">
           Find investment opportunities based on your criteria
         </p>
       </div>

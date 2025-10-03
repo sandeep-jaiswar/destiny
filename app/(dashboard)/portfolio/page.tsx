@@ -75,12 +75,12 @@ export default function PortfolioPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-foreground">Portfolio</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-4xl font-bold text-white font-mono">Portfolio</h1>
+          <p className="text-white/80 mt-1">
             Track your investments and performance
           </p>
         </div>
-        <Button>
+        <Button className="bg-[#AA0000] hover:bg-[#CC0000] text-white">
           <Plus className="w-4 h-4 mr-2" />
           Add Position
         </Button>
@@ -90,13 +90,13 @@ export default function PortfolioPage() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-gray-600">
               Total Value
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{formatCurrency(totalValue)}</div>
-            {loading && <div className="text-xs text-muted-foreground mt-1">Updating...</div>}
+            <div className="text-3xl font-bold text-black font-mono">{formatCurrency(totalValue)}</div>
+            {loading && <div className="text-xs text-gray-500 mt-1">Updating...</div>}
           </CardContent>
         </Card>
 
