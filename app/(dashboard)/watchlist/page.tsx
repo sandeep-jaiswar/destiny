@@ -108,8 +108,8 @@ export default function WatchlistPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-foreground">Watchlist</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-4xl font-bold text-white font-mono">Watchlist</h1>
+          <p className="text-white/80 mt-1">
             Monitor your favorite stocks
           </p>
         </div>
@@ -118,8 +118,8 @@ export default function WatchlistPage() {
       {/* Add Symbol Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Add to Watchlist</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-black font-mono">Add to Watchlist</CardTitle>
+          <CardDescription className="text-gray-600">
             Enter a stock symbol to add it to your watchlist
           </CardDescription>
         </CardHeader>
@@ -132,7 +132,7 @@ export default function WatchlistPage() {
               onChange={(e) => setNewSymbol(e.target.value.toUpperCase())}
               className="max-w-xs"
             />
-            <Button type="submit">
+            <Button type="submit" className="bg-[#AA0000] hover:bg-[#CC0000] text-white">
               <Plus className="w-4 h-4 mr-2" />
               Add Symbol
             </Button>
@@ -144,7 +144,7 @@ export default function WatchlistPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-sm font-medium text-gray-600">
               Total Symbols
             </CardTitle>
           </CardHeader>

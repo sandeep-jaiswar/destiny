@@ -66,102 +66,102 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white p-6 rounded-lg border border-gray-200">
-        <h1 className="text-3xl font-bold text-foreground mb-1">Trading Dashboard</h1>
-        <p className="text-muted-foreground text-sm">
+      <div className="bg-white p-6 rounded-lg border border-white">
+        <h1 className="text-3xl font-bold text-black mb-1 font-mono">Trading Dashboard</h1>
+        <p className="text-gray-600 text-sm">
           Real-time market data and professional trading insights
         </p>
       </div>
 
       {/* Market Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-gray-200 shadow-sm">
+        <Card className="border-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Positions</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-600">Total Positions</CardTitle>
+            <Activity className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-foreground font-mono">{quotes.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">Active stocks tracked</p>
+            <div className="text-3xl font-bold text-black font-mono">{quotes.length}</div>
+            <p className="text-xs text-gray-500 mt-1">Active stocks tracked</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200 shadow-sm">
+        <Card className="border-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Market Status</CardTitle>
-            <TrendingUp className="h-4 w-4 text-success" />
+            <CardTitle className="text-sm font-medium text-gray-600">Market Status</CardTitle>
+            <TrendingUp className="h-4 w-4 text-[#00FF00]" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-success font-mono">OPEN</div>
-            <p className="text-xs text-muted-foreground mt-1">Real-time updates</p>
+            <div className="text-3xl font-bold text-[#00FF00] font-mono">OPEN</div>
+            <p className="text-xs text-gray-500 mt-1">Real-time updates</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200 shadow-sm bg-green-50">
+        <Card className="border-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-success">Gainers</CardTitle>
-            <TrendingUp className="h-4 w-4 text-success" />
+            <CardTitle className="text-sm font-medium text-[#00FF00]">Gainers</CardTitle>
+            <TrendingUp className="h-4 w-4 text-[#00FF00]" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-success font-mono">
+            <div className="text-3xl font-bold text-[#00FF00] font-mono">
               {quotes.filter(q => q.changePercent > 0).length}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Stocks up today</p>
+            <p className="text-xs text-gray-500 mt-1">Stocks up today</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200 shadow-sm bg-red-50">
+        <Card className="border-white shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-destructive">Losers</CardTitle>
-            <TrendingDown className="h-4 w-4 text-destructive" />
+            <CardTitle className="text-sm font-medium text-[#FF6666]">Losers</CardTitle>
+            <TrendingDown className="h-4 w-4 text-[#FF6666]" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-destructive font-mono">
+            <div className="text-3xl font-bold text-[#FF6666] font-mono">
               {quotes.filter(q => q.changePercent < 0).length}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Stocks down today</p>
+            <p className="text-xs text-gray-500 mt-1">Stocks down today</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Professional Data Table */}
-      <Card className="border-gray-200 shadow-sm">
-        <CardHeader className="bg-gray-50 border-b border-gray-200">
+      {/* Professional Data Table - Bloomberg Style */}
+      <div className="bg-[#CC0000] border-2 border-white rounded-lg overflow-hidden">
+        <div className="bg-[#AA0000] border-b-2 border-white px-6 py-3">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-lg font-bold text-foreground">MARKET OVERVIEW</CardTitle>
-              <CardDescription className="text-xs mt-1">
+              <h3 className="text-lg font-bold text-white font-mono">MARKET OVERVIEW</h3>
+              <p className="text-xs mt-1 text-white/80">
                 Real-time quotes for top stocks · Updated every 5 seconds
-              </CardDescription>
+              </p>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
-              <span className="text-xs font-medium text-success">LIVE</span>
+              <div className="w-2 h-2 bg-[#00FF00] rounded-full animate-pulse" />
+              <span className="text-xs font-medium text-[#00FF00]">LIVE</span>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="p-0">
+        </div>
+        <div className="p-0">
           {loading ? (
             <div className="flex justify-center items-center py-12">
               <div className="flex flex-col items-center space-y-3">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
-                <p className="text-sm text-muted-foreground">Loading market data...</p>
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-white"></div>
+                <p className="text-sm text-white">Loading market data...</p>
               </div>
             </div>
           ) : error ? (
-            <div className="text-center py-12 text-destructive">
+            <div className="text-center py-12 text-white">
               <p className="font-medium">{error}</p>
               <button
                 onClick={fetchMarketData}
-                className="mt-4 px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors font-medium"
+                className="mt-4 px-6 py-2 bg-[#AA0000] text-white rounded-md hover:bg-[#DD2222] transition-colors font-medium border border-white"
               >
                 Retry
               </button>
             </div>
           ) : (
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-white/20">
               {/* Table Header */}
-              <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50 text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+              <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-[#AA0000] text-xs font-semibold text-white uppercase tracking-wide font-mono">
                 <div className="col-span-2">Symbol</div>
                 <div className="col-span-3 text-right">Price</div>
                 <div className="col-span-3 text-right">Change</div>
@@ -174,34 +174,34 @@ export default function DashboardPage() {
                 <Link
                   key={quote.symbol}
                   href={`/charts/${quote.symbol}`}
-                  className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-gray-50 transition-colors group cursor-pointer"
+                  className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-[#DD2222] transition-colors group cursor-pointer"
                 >
                   <div className="col-span-2 flex items-center">
                     <div>
-                      <div className="font-bold text-foreground text-sm group-hover:text-primary transition-colors">
+                      <div className="font-bold text-white text-sm group-hover:text-[#FFFF00] transition-colors font-mono">
                         {quote.symbol}
                       </div>
-                      <div className="text-xs text-muted-foreground">Stock #{index + 1}</div>
+                      <div className="text-xs text-white/60">Stock #{index + 1}</div>
                     </div>
                   </div>
                   
-                  <div className="col-span-3 text-right font-mono text-sm font-semibold text-foreground flex items-center justify-end">
+                  <div className="col-span-3 text-right font-mono text-sm font-semibold text-white flex items-center justify-end">
                     {formatPrice(quote.price)}
                   </div>
                   
                   <div className={cn(
                     "col-span-3 text-right font-mono text-sm font-semibold flex items-center justify-end",
-                    quote.change >= 0 ? 'text-success' : 'text-destructive'
+                    quote.change >= 0 ? 'text-[#00FF00]' : 'text-[#FF6666]'
                   )}>
                     {quote.change >= 0 ? '+' : ''}{quote.change.toFixed(2)}
                   </div>
                   
                   <div className="col-span-2 text-right flex items-center justify-end">
                     <div className={cn(
-                      "inline-flex items-center px-2 py-1 rounded text-xs font-mono font-semibold",
+                      "inline-flex items-center px-2 py-1 text-xs font-mono font-semibold",
                       quote.changePercent >= 0 
-                        ? 'bg-green-100 text-success' 
-                        : 'bg-red-100 text-destructive'
+                        ? 'text-[#00FF00]' 
+                        : 'text-[#FF6666]'
                     )}>
                       {quote.changePercent >= 0 ? (
                         <TrendingUp className="w-3 h-3 mr-1" />
@@ -212,28 +212,28 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   
-                  <div className="col-span-2 text-right font-mono text-sm text-muted-foreground flex items-center justify-end">
+                  <div className="col-span-2 text-right font-mono text-sm text-white/70 flex items-center justify-end">
                     {formatVolume(quote.volume)}
                   </div>
                 </Link>
               ))}
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-3">
         <Link href="/watchlist">
-          <Card className="hover:shadow-md cursor-pointer transition-all border-gray-200 hover:border-primary group">
+          <Card className="hover:shadow-md cursor-pointer transition-all border-white hover:border-[#CC0000] group">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center text-foreground group-hover:text-primary transition-colors">
+                <CardTitle className="flex items-center text-black group-hover:text-[#CC0000] transition-colors font-mono">
                   <Activity className="w-5 h-5 mr-2" />
                   Watchlist
                 </CardTitle>
-                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                  <Activity className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
+                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-[#CC0000]/10 transition-colors">
+                  <Activity className="w-4 h-4 text-gray-600 group-hover:text-[#CC0000]" />
                 </div>
               </div>
               <CardDescription className="text-xs mt-2">
@@ -244,15 +244,15 @@ export default function DashboardPage() {
         </Link>
 
         <Link href="/screener">
-          <Card className="hover:shadow-md cursor-pointer transition-all border-gray-200 hover:border-primary group">
+          <Card className="hover:shadow-md cursor-pointer transition-all border-white hover:border-[#CC0000] group">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center text-foreground group-hover:text-primary transition-colors">
+                <CardTitle className="flex items-center text-black group-hover:text-[#CC0000] transition-colors font-mono">
                   <TrendingUp className="w-5 h-5 mr-2" />
                   Stock Screener
                 </CardTitle>
-                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                  <TrendingUp className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
+                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-[#CC0000]/10 transition-colors">
+                  <TrendingUp className="w-4 h-4 text-gray-600 group-hover:text-[#CC0000]" />
                 </div>
               </div>
               <CardDescription className="text-xs mt-2">
@@ -263,15 +263,15 @@ export default function DashboardPage() {
         </Link>
 
         <Link href="/portfolio">
-          <Card className="hover:shadow-md cursor-pointer transition-all border-gray-200 hover:border-primary group">
+          <Card className="hover:shadow-md cursor-pointer transition-all border-white hover:border-[#CC0000] group">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center text-foreground group-hover:text-primary transition-colors">
+                <CardTitle className="flex items-center text-black group-hover:text-[#CC0000] transition-colors font-mono">
                   <DollarSign className="w-5 h-5 mr-2" />
                   Portfolio
                 </CardTitle>
-                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                  <DollarSign className="w-4 h-4 text-muted-foreground group-hover:text-primary" />
+                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-[#CC0000]/10 transition-colors">
+                  <DollarSign className="w-4 h-4 text-gray-600 group-hover:text-[#CC0000]" />
                 </div>
               </div>
               <CardDescription className="text-xs mt-2">

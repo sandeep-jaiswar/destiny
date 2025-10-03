@@ -9,8 +9,8 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-4xl font-bold text-foreground">Settings</h1>
-        <p className="text-muted-foreground mt-1">
+        <h1 className="text-4xl font-bold text-white font-mono">Settings</h1>
+        <p className="text-white/80 mt-1">
           Manage your account and application preferences
         </p>
       </div>
@@ -18,26 +18,26 @@ export default function SettingsPage() {
       {/* Appearance */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center">
+          <CardTitle className="flex items-center text-black font-mono">
             <Moon className="w-5 h-5 mr-2" />
             Appearance
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-gray-600">
             Customize the look and feel of the application
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium">Theme</p>
-              <p className="text-sm text-muted-foreground">Choose your preferred theme</p>
+              <p className="font-medium text-black">Theme</p>
+              <p className="text-sm text-gray-600">Choose your preferred theme</p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm">
                 <Sun className="w-4 h-4 mr-2" />
                 Light
               </Button>
-              <Button variant="default" size="sm">
+              <Button variant="default" size="sm" className="bg-[#AA0000] hover:bg-[#CC0000]">
                 <Moon className="w-4 h-4 mr-2" />
                 Dark
               </Button>
