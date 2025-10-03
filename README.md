@@ -52,6 +52,24 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+### Storybook
+
+Run Storybook for interactive component development and documentation:
+
+```bash
+npm run storybook
+```
+
+Open [http://localhost:6006](http://localhost:6006) to explore all UI components with interactive controls.
+
+Build static Storybook for deployment:
+
+```bash
+npm run build-storybook
+```
+
+See [STORYBOOK.md](./STORYBOOK.md) for complete documentation.
+
 ## Learn More
 
 To learn more about MongoDB, check out the MongoDB documentation:
