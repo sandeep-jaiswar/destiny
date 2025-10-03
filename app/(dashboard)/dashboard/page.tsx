@@ -124,44 +124,44 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Professional Data Table */}
-      <Card className="border-white shadow-sm">
-        <CardHeader className="bg-[#AA0000] border-b border-white">
+      {/* Professional Data Table - Bloomberg Style */}
+      <div className="bg-[#CC0000] border-2 border-white rounded-lg overflow-hidden">
+        <div className="bg-[#AA0000] border-b-2 border-white px-6 py-3">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-lg font-bold text-white font-mono">MARKET OVERVIEW</CardTitle>
-              <CardDescription className="text-xs mt-1 text-white/80">
+              <h3 className="text-lg font-bold text-white font-mono">MARKET OVERVIEW</h3>
+              <p className="text-xs mt-1 text-white/80">
                 Real-time quotes for top stocks · Updated every 5 seconds
-              </CardDescription>
+              </p>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-[#00FF00] rounded-full animate-pulse" />
               <span className="text-xs font-medium text-[#00FF00]">LIVE</span>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="p-0">
+        </div>
+        <div className="p-0">
           {loading ? (
             <div className="flex justify-center items-center py-12">
               <div className="flex flex-col items-center space-y-3">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#CC0000]"></div>
-                <p className="text-sm text-gray-500">Loading market data...</p>
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-white"></div>
+                <p className="text-sm text-white">Loading market data...</p>
               </div>
             </div>
           ) : error ? (
-            <div className="text-center py-12 text-[#FF6666]">
+            <div className="text-center py-12 text-white">
               <p className="font-medium">{error}</p>
               <button
                 onClick={fetchMarketData}
-                className="mt-4 px-6 py-2 bg-[#AA0000] text-white rounded-md hover:bg-[#CC0000] transition-colors font-medium"
+                className="mt-4 px-6 py-2 bg-[#AA0000] text-white rounded-md hover:bg-[#DD2222] transition-colors font-medium border border-white"
               >
                 Retry
               </button>
             </div>
           ) : (
-            <div className="divide-y divide-gray-100">
+            <div className="divide-y divide-white/20">
               {/* Table Header */}
-              <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50 text-xs font-semibold text-gray-600 uppercase tracking-wide font-mono">
+              <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-[#AA0000] text-xs font-semibold text-white uppercase tracking-wide font-mono">
                 <div className="col-span-2">Symbol</div>
                 <div className="col-span-3 text-right">Price</div>
                 <div className="col-span-3 text-right">Change</div>
@@ -174,18 +174,18 @@ export default function DashboardPage() {
                 <Link
                   key={quote.symbol}
                   href={`/charts/${quote.symbol}`}
-                  className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-gray-50 transition-colors group cursor-pointer"
+                  className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-[#DD2222] transition-colors group cursor-pointer"
                 >
                   <div className="col-span-2 flex items-center">
                     <div>
-                      <div className="font-bold text-black text-sm group-hover:text-[#CC0000] transition-colors font-mono">
+                      <div className="font-bold text-white text-sm group-hover:text-[#FFFF00] transition-colors font-mono">
                         {quote.symbol}
                       </div>
-                      <div className="text-xs text-gray-500">Stock #{index + 1}</div>
+                      <div className="text-xs text-white/60">Stock #{index + 1}</div>
                     </div>
                   </div>
                   
-                  <div className="col-span-3 text-right font-mono text-sm font-semibold text-black flex items-center justify-end">
+                  <div className="col-span-3 text-right font-mono text-sm font-semibold text-white flex items-center justify-end">
                     {formatPrice(quote.price)}
                   </div>
                   
@@ -198,10 +198,10 @@ export default function DashboardPage() {
                   
                   <div className="col-span-2 text-right flex items-center justify-end">
                     <div className={cn(
-                      "inline-flex items-center px-2 py-1 rounded text-xs font-mono font-semibold",
+                      "inline-flex items-center px-2 py-1 text-xs font-mono font-semibold",
                       quote.changePercent >= 0 
-                        ? 'bg-green-100 text-[#00FF00]' 
-                        : 'bg-red-100 text-[#FF6666]'
+                        ? 'text-[#00FF00]' 
+                        : 'text-[#FF6666]'
                     )}>
                       {quote.changePercent >= 0 ? (
                         <TrendingUp className="w-3 h-3 mr-1" />
@@ -212,15 +212,15 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   
-                  <div className="col-span-2 text-right font-mono text-sm text-gray-500 flex items-center justify-end">
+                  <div className="col-span-2 text-right font-mono text-sm text-white/70 flex items-center justify-end">
                     {formatVolume(quote.volume)}
                   </div>
                 </Link>
               ))}
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-3">
