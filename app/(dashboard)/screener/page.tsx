@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,45 +8,65 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Search, TrendingUp, TrendingDown } from 'lucide-react';
 import Link from 'next/link';
 
-// Mock screener results
-const mockResults = [
-  { symbol: 'AAPL', name: 'Apple Inc.', price: 175.50, volume: 52000000, marketCap: 2750000000000, changePercent: 1.44, pe: 28.5 },
-  { symbol: 'MSFT', name: 'Microsoft Corporation', price: 350.25, volume: 25000000, marketCap: 2600000000000, changePercent: -0.34, pe: 32.1 },
-  { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 140.80, volume: 18000000, marketCap: 1800000000000, changePercent: 2.77, pe: 25.3 },
-  { symbol: 'AMZN', name: 'Amazon.com Inc.', price: 145.30, volume: 42000000, marketCap: 1500000000000, changePercent: 0.35, pe: 45.2 },
-  { symbol: 'NVDA', name: 'NVIDIA Corporation', price: 480.20, volume: 38000000, marketCap: 1200000000000, changePercent: 3.31, pe: 68.5 },
-];
+interface ScreenerResult {
+  symbol: string;
+  name: string;
+  price: number;
+  volume: number;
+  marketCap: number;
+  changePercent: number;
+  pe?: number;
+}
 
 export default function ScreenerPage() {
-  const [results, setResults] = useState(mockResults);
+  const [results, setResults] = useState<ScreenerResult[]>([]);
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [minVolume, setMinVolume] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = () => {
-    // In a real app, this would call the API with filter parameters
-    let filtered = mockResults;
-    
-    if (minPrice) {
-      filtered = filtered.filter(item => item.price >= parseFloat(minPrice));
+  useEffect(() => {
+    // Load initial results on mount
+    const loadInitialData = async () => {
+      await handleSearch();
+    };
+    loadInitialData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSearch = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Build query parameters
+      const params = new URLSearchParams();
+      if (minPrice) params.append('minPrice', minPrice);
+      if (maxPrice) params.append('maxPrice', maxPrice);
+      if (minVolume) params.append('minVolume', (parseFloat(minVolume) * 1000000).toString());
+      
+      const response = await fetch(`/api/screener?${params.toString()}`);
+      const data = await response.json();
+      
+      if (data.success && data.data?.results) {
+        setResults(data.data.results);
+      } else {
+        setError(data.error?.message || 'Failed to screen stocks');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
     }
-    
-    if (maxPrice) {
-      filtered = filtered.filter(item => item.price <= parseFloat(maxPrice));
-    }
-    
-    if (minVolume) {
-      filtered = filtered.filter(item => item.volume >= parseFloat(minVolume) * 1000000);
-    }
-    
-    setResults(filtered);
   };
 
   const handleReset = () => {
     setMinPrice('');
     setMaxPrice('');
     setMinVolume('');
-    setResults(mockResults);
+    // Reload all results
+    handleSearch();
   };
 
   const formatCurrency = (value: number) => {
@@ -199,7 +219,24 @@ export default function ScreenerPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {results.length === 0 ? (
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="flex flex-col items-center space-y-3">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+                <p className="text-sm text-muted-foreground">Screening stocks...</p>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12 text-destructive">
+              <p className="font-medium">{error}</p>
+              <button
+                onClick={handleSearch}
+                className="mt-4 px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors font-medium"
+              >
+                Retry
+              </button>
+            </div>
+          ) : results.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
               <p>No stocks found matching your criteria</p>
@@ -239,7 +276,7 @@ export default function ScreenerPage() {
                     </TableCell>
                     <TableCell className="text-right">{formatVolume(item.volume)}</TableCell>
                     <TableCell className="text-right">{formatMarketCap(item.marketCap)}</TableCell>
-                    <TableCell className="text-right">{item.pe.toFixed(2)}</TableCell>
+                    <TableCell className="text-right">{item.pe ? item.pe.toFixed(2) : 'N/A'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

@@ -1,31 +1,68 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { TrendingUp, TrendingDown, Plus } from 'lucide-react';
 
-// Mock portfolio data
-const portfolioHoldings = [
-  { symbol: 'AAPL', shares: 50, avgCost: 150.00, currentPrice: 175.50, change: 17.0 },
-  { symbol: 'MSFT', shares: 30, avgCost: 320.00, currentPrice: 350.25, change: 9.45 },
-  { symbol: 'GOOGL', shares: 20, avgCost: 130.00, currentPrice: 140.80, change: 8.31 },
-  { symbol: 'TSLA', shares: 15, avgCost: 200.00, currentPrice: 185.50, change: -7.25 },
-];
+interface PortfolioPosition {
+  symbol: string;
+  shares: number;
+  avgCost: number;
+  currentPrice: number;
+  change: number;
+  changePercent: number;
+  marketValue: number;
+  costBasis: number;
+  gainLoss: number;
+  gainLossPercent: number;
+}
+
+interface PortfolioSummary {
+  holdings: PortfolioPosition[];
+  totalValue: number;
+  totalCost: number;
+  totalGainLoss: number;
+  totalGainLossPercent: number;
+}
 
 export default function PortfolioPage() {
-  const totalValue = portfolioHoldings.reduce(
-    (sum, holding) => sum + holding.shares * holding.currentPrice,
-    0
-  );
+  const [portfolio, setPortfolio] = useState<PortfolioSummary | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const totalCost = portfolioHoldings.reduce(
-    (sum, holding) => sum + holding.shares * holding.avgCost,
-    0
-  );
+  useEffect(() => {
+    fetchPortfolio();
+    
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchPortfolio, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const totalGainLoss = totalValue - totalCost;
-  const totalGainLossPercent = (totalGainLoss / totalCost) * 100;
+  const fetchPortfolio = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/portfolio');
+      const data = await response.json();
+      
+      if (data.success && data.data) {
+        setPortfolio(data.data);
+        setError(null);
+      } else {
+        setError(data.error?.message || 'Failed to fetch portfolio');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const totalValue = portfolio?.totalValue || 0;
+  const totalCost = portfolio?.totalCost || 0;
+  const totalGainLoss = portfolio?.totalGainLoss || 0;
+  const totalGainLossPercent = portfolio?.totalGainLossPercent || 0;
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -59,6 +96,7 @@ export default function PortfolioPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{formatCurrency(totalValue)}</div>
+            {loading && <div className="text-xs text-muted-foreground mt-1">Updating...</div>}
           </CardContent>
         </Card>
 
@@ -104,47 +142,59 @@ export default function PortfolioPage() {
       <Card>
         <CardHeader>
           <CardTitle>Holdings</CardTitle>
-          <CardDescription>Your current stock positions</CardDescription>
+          <CardDescription>Your current stock positions with live prices</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Symbol</TableHead>
-                <TableHead className="text-right">Shares</TableHead>
-                <TableHead className="text-right">Avg Cost</TableHead>
-                <TableHead className="text-right">Current Price</TableHead>
-                <TableHead className="text-right">Market Value</TableHead>
-                <TableHead className="text-right">Gain/Loss</TableHead>
-                <TableHead className="text-right">Return %</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {portfolioHoldings.map((holding) => {
-                const marketValue = holding.shares * holding.currentPrice;
-                const costBasis = holding.shares * holding.avgCost;
-                const gainLoss = marketValue - costBasis;
-                const gainLossPercent = (gainLoss / costBasis) * 100;
-
-                return (
+          {loading && !portfolio ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="flex flex-col items-center space-y-3">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+                <p className="text-sm text-muted-foreground">Loading portfolio...</p>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12 text-destructive">
+              <p className="font-medium">{error}</p>
+              <button
+                onClick={fetchPortfolio}
+                className="mt-4 px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors font-medium"
+              >
+                Retry
+              </button>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Symbol</TableHead>
+                  <TableHead className="text-right">Shares</TableHead>
+                  <TableHead className="text-right">Avg Cost</TableHead>
+                  <TableHead className="text-right">Current Price</TableHead>
+                  <TableHead className="text-right">Market Value</TableHead>
+                  <TableHead className="text-right">Gain/Loss</TableHead>
+                  <TableHead className="text-right">Return %</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {portfolio?.holdings.map((holding) => (
                   <TableRow key={holding.symbol}>
                     <TableCell className="font-medium">{holding.symbol}</TableCell>
                     <TableCell className="text-right">{holding.shares}</TableCell>
                     <TableCell className="text-right">{formatCurrency(holding.avgCost)}</TableCell>
                     <TableCell className="text-right">{formatCurrency(holding.currentPrice)}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(marketValue)}</TableCell>
-                    <TableCell className={`text-right ${gainLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {gainLoss >= 0 ? '+' : ''}{formatCurrency(gainLoss)}
+                    <TableCell className="text-right">{formatCurrency(holding.marketValue)}</TableCell>
+                    <TableCell className={`text-right ${holding.gainLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      {holding.gainLoss >= 0 ? '+' : ''}{formatCurrency(holding.gainLoss)}
                     </TableCell>
-                    <TableCell className={`text-right ${gainLossPercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {gainLossPercent >= 0 ? <TrendingUp className="inline w-4 h-4 mr-1" /> : <TrendingDown className="inline w-4 h-4 mr-1" />}
-                      {gainLossPercent >= 0 ? '+' : ''}{gainLossPercent.toFixed(2)}%
+                    <TableCell className={`text-right ${holding.gainLossPercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      {holding.gainLossPercent >= 0 ? <TrendingUp className="inline w-4 h-4 mr-1" /> : <TrendingDown className="inline w-4 h-4 mr-1" />}
+                      {holding.gainLossPercent >= 0 ? '+' : ''}{holding.gainLossPercent.toFixed(2)}%
                     </TableCell>
                   </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>

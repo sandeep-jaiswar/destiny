@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,36 +8,91 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Star, Plus, Trash2, TrendingUp, TrendingDown } from 'lucide-react';
 import Link from 'next/link';
 
-// Mock watchlist data
-const mockWatchlist = [
-  { symbol: 'AAPL', name: 'Apple Inc.', price: 175.50, change: 2.5, changePercent: 1.44 },
-  { symbol: 'MSFT', name: 'Microsoft Corporation', price: 350.25, change: -1.2, changePercent: -0.34 },
-  { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 140.80, change: 3.8, changePercent: 2.77 },
-  { symbol: 'AMZN', name: 'Amazon.com Inc.', price: 145.30, change: 0.5, changePercent: 0.35 },
-  { symbol: 'NVDA', name: 'NVIDIA Corporation', price: 480.20, change: 15.4, changePercent: 3.31 },
-];
+interface WatchlistItem {
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+  changePercent: number;
+  volume: number;
+  marketCap?: number;
+}
 
 export default function WatchlistPage() {
-  const [watchlist, setWatchlist] = useState(mockWatchlist);
+  const [watchlist, setWatchlist] = useState<WatchlistItem[]>([]);
   const [newSymbol, setNewSymbol] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleAddSymbol = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newSymbol && !watchlist.find(item => item.symbol === newSymbol.toUpperCase())) {
-      // In a real app, fetch the symbol data from API
-      setWatchlist([...watchlist, {
-        symbol: newSymbol.toUpperCase(),
-        name: newSymbol.toUpperCase() + ' Inc.',
-        price: 0,
-        change: 0,
-        changePercent: 0,
-      }]);
-      setNewSymbol('');
+  useEffect(() => {
+    fetchWatchlist();
+    
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchWatchlist, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchWatchlist = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/watchlist');
+      const data = await response.json();
+      
+      if (data.success && data.data?.items) {
+        setWatchlist(data.data.items);
+        setError(null);
+      } else {
+        setError(data.error?.message || 'Failed to fetch watchlist');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleRemoveSymbol = (symbol: string) => {
-    setWatchlist(watchlist.filter(item => item.symbol !== symbol));
+  const handleAddSymbol = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newSymbol) return;
+
+    try {
+      const response = await fetch('/api/watchlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ symbol: newSymbol }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setNewSymbol('');
+        // Refresh watchlist to show the new symbol
+        await fetchWatchlist();
+      } else {
+        alert(data.error?.message || 'Failed to add symbol');
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to add symbol');
+    }
+  };
+
+  const handleRemoveSymbol = async (symbol: string) => {
+    try {
+      const response = await fetch(`/api/watchlist?symbol=${symbol}`, {
+        method: 'DELETE',
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Remove from local state
+        setWatchlist(watchlist.filter(item => item.symbol !== symbol));
+      } else {
+        alert(data.error?.message || 'Failed to remove symbol');
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to remove symbol');
+    }
   };
 
   const formatCurrency = (value: number) => {
@@ -134,7 +189,24 @@ export default function WatchlistPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {watchlist.length === 0 ? (
+          {loading && watchlist.length === 0 ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="flex flex-col items-center space-y-3">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+                <p className="text-sm text-muted-foreground">Loading watchlist...</p>
+              </div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12 text-destructive">
+              <p className="font-medium">{error}</p>
+              <button
+                onClick={fetchWatchlist}
+                className="mt-4 px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors font-medium"
+              >
+                Retry
+              </button>
+            </div>
+          ) : watchlist.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Star className="w-12 h-12 mx-auto mb-4 opacity-50" />
               <p>Your watchlist is empty</p>
