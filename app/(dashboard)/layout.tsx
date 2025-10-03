@@ -15,7 +15,7 @@ function DashboardLayoutContent({
   const { isCollapsed } = useSidebar();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#CC0000]">
       {/* Sidebar for desktop */}
       <Sidebar />
       
@@ -32,7 +32,7 @@ function DashboardLayoutContent({
         }`}
       >
         {/* Mobile header */}
-        <header className="lg:hidden sticky top-0 z-20 flex items-center justify-between p-4 bg-primary border-b border-primary">
+        <header className="lg:hidden sticky top-0 z-20 flex items-center justify-between p-4 bg-[#AA0000] border-b border-white">
           <button
             onClick={() => setIsMobileMenuOpen(true)}
             className="p-1.5 hover:bg-white/10 rounded transition-colors"
@@ -45,7 +45,7 @@ function DashboardLayoutContent({
         </header>
 
         {/* Page content */}
-        <main className="p-4 lg:p-8 bg-gray-50 min-h-screen">
+        <main className="p-4 lg:p-8 bg-[#CC0000] min-h-screen">
           {children}
         </main>
       </div>

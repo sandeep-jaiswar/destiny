@@ -4,7 +4,7 @@
 
 body {
   @apply relative min-w-[320px] min-h-screen antialiased;
-  @apply bg-white text-[#0C0D0D] dark:bg-black dark:text-white;
+  @apply bg-[#CC0000] text-white;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -12,63 +12,67 @@ body {
 
 @layer base {
   :root {
-    /* Bloomberg-inspired Professional Red & White Theme */
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%; /* #0F172A - High contrast text */
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    /* Exact Bloomberg Terminal Colors */
+    --background: 0 100% 40%; /* #CC0000 - Bloomberg red background */
+    --foreground: 0 0% 100%; /* #FFFFFF - White text */
+    --card: 0 0% 100%; /* #FFFFFF - White panels */
+    --card-foreground: 0 0% 0%; /* #000000 - Black text on white */
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 0 84% 50%; /* #A42A04 - Professional red */
+    --popover-foreground: 0 0% 0%;
+    --primary: 0 100% 33%; /* #AA0000 - Dark red for headers */
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 215 16% 47%; /* #64748B - Muted text */
-    --accent: 0 0% 97%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 72% 51%; /* #EF4444 - Bearish red */
+    --secondary: 0 100% 43%; /* #DD2222 - Light red for hover */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 100% 40%; /* #CC0000 - Match background */
+    --muted-foreground: 0 0% 85%; /* Light gray for muted text on red */
+    --accent: 0 100% 43%; /* #DD2222 */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 100% 70%; /* #FF6666 - Lighter red for negative */
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 84% 50%;
-    --success: 151 81% 36%; /* #10B981 - Bullish green */
-    --success-foreground: 0 0% 100%;
-    --chart-1: 0 84% 50%;
-    --chart-2: 151 81% 36%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --border: 0 0% 100%; /* White borders */
+    --input: 0 100% 40%;
+    --ring: 0 0% 100%;
+    --success: 120 100% 50%; /* #00FF00 - Bright green for positive */
+    --success-foreground: 0 0% 0%;
+    --chart-1: 0 100% 40%;
+    --chart-2: 120 100% 50%;
+    --chart-3: 180 100% 50%; /* #00FFFF - Cyan */
+    --chart-4: 60 100% 50%; /* #FFFF00 - Yellow */
+    --chart-5: 0 100% 70%;
     --radius: 0.5rem;
+    
+    /* Bloomberg-specific colors */
+    --bloomberg-yellow: 60 100% 50%; /* #FFFF00 - Section headers */
+    --bloomberg-cyan: 180 100% 50%; /* #00FFFF - Special indicators */
   }
   .dark {
-    /* Professional Dark Mode for Night Trading */
-    --background: 222 47% 11%;
-    --foreground: 0 0% 98%;
-    --card: 217 33% 17%;
-    --card-foreground: 0 0% 98%;
-    --popover: 217 33% 17%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 84% 50%; /* #A42A04 - Professional red */
+    /* Professional Dark Mode - Keep Bloomberg red theme */
+    --background: 0 100% 40%; /* #CC0000 - Bloomberg red */
+    --foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 0 100% 33%; /* #AA0000 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 217 33% 20%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 217 33% 20%;
-    --muted-foreground: 215 16% 65%;
-    --accent: 217 33% 20%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 72% 51%; /* #EF4444 - Bearish red */
+    --secondary: 0 100% 43%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 100% 40%;
+    --muted-foreground: 0 0% 85%;
+    --accent: 0 100% 43%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 100% 70%;
     --destructive-foreground: 0 0% 100%;
-    --border: 217 33% 20%;
-    --input: 217 33% 20%;
-    --ring: 0 84% 50%;
-    --success: 151 81% 36%; /* #10B981 - Bullish green */
-    --success-foreground: 0 0% 100%;
-    --chart-1: 0 84% 50%;
-    --chart-2: 151 81% 36%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --border: 0 0% 100%;
+    --input: 0 100% 40%;
+    --ring: 0 0% 100%;
+    --success: 120 100% 50%; /* #00FF00 */
+    --success-foreground: 0 0% 0%;
+    --chart-1: 0 100% 40%;
+    --chart-2: 120 100% 50%;
+    --chart-3: 180 100% 50%;
+    --chart-4: 60 100% 50%;
+    --chart-5: 0 100% 70%;
   }
 }
 
@@ -79,6 +83,6 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#CC0000] text-white;
   }
 }
