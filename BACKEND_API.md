@@ -236,6 +236,139 @@ Get cache statistics and system metrics.
 }
 ```
 
+### System Statistics API
+Get real-time cache and system performance metrics.
+
+**Endpoint:** `GET /api/stats`
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "cacheStats": {
+      "hitRate": 0.87,
+      "totalRequests": 1234,
+      "cacheHits": 1073
+    },
+    "memoryUsage": {
+      "heapUsed": 45678912,
+      "heapTotal": 67108864
+    }
+  }
+}
+```
+
+### Portfolio API
+Get user's portfolio with real-time prices and P&L calculations.
+
+**Endpoint:** `GET /api/portfolio`
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "holdings": [
+      {
+        "symbol": "AAPL",
+        "shares": 50,
+        "avgCost": 150.00,
+        "currentPrice": 175.50,
+        "change": 2.15,
+        "changePercent": 1.24,
+        "marketValue": 8775.00,
+        "costBasis": 7500.00,
+        "gainLoss": 1275.00,
+        "gainLossPercent": 17.0
+      }
+    ],
+    "totalValue": 35000.00,
+    "totalCost": 30000.00,
+    "totalGainLoss": 5000.00,
+    "totalGainLossPercent": 16.67
+  },
+  "metadata": {
+    "timestamp": "2024-01-15T14:30:00.000Z",
+    "cached": false
+  }
+}
+```
+
+### Watchlist API
+Get user's watchlist with real-time quotes.
+
+**Endpoint:** `GET /api/watchlist`
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "symbol": "AAPL",
+        "name": "Apple Inc.",
+        "price": 175.50,
+        "change": 2.15,
+        "changePercent": 1.24,
+        "volume": 58234567,
+        "marketCap": 2750000000000
+      }
+    ]
+  }
+}
+```
+
+**Add Symbol:** `POST /api/watchlist`
+
+**Body:**
+```json
+{
+  "symbol": "AAPL"
+}
+```
+
+**Remove Symbol:** `DELETE /api/watchlist?symbol=AAPL`
+
+### Screener API
+Screen stocks based on filter criteria.
+
+**Endpoint:** `GET /api/screener?minPrice=100&maxPrice=500&minVolume=10000000`
+
+**Parameters:**
+- `minPrice` (optional): Minimum stock price
+- `maxPrice` (optional): Maximum stock price
+- `minVolume` (optional): Minimum trading volume
+- `minMarketCap` (optional): Minimum market capitalization
+- `maxMarketCap` (optional): Maximum market capitalization
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "results": [
+      {
+        "symbol": "AAPL",
+        "name": "Apple Inc.",
+        "price": 175.50,
+        "volume": 58234567,
+        "marketCap": 2750000000000,
+        "changePercent": 1.24,
+        "pe": 28.5
+      }
+    ],
+    "count": 15,
+    "filters": {
+      "minPrice": 100,
+      "maxPrice": 500,
+      "minVolume": 10000000
+    }
+  }
+}
+```
+
 ## 🧪 Testing the APIs
 
 ### Using the Demo Page
@@ -266,6 +399,21 @@ curl "http://localhost:3000/api/strategy?symbol=AAPL&period=3mo"
 curl -X POST http://localhost:3000/api/quotes \
   -H "Content-Type: application/json" \
   -d '{"symbols": ["AAPL", "TSLA", "GOOGL"]}'
+```
+
+**Get Portfolio:**
+```bash
+curl http://localhost:3000/api/portfolio
+```
+
+**Get Watchlist:**
+```bash
+curl http://localhost:3000/api/watchlist
+```
+
+**Screen Stocks:**
+```bash
+curl "http://localhost:3000/api/screener?minPrice=100&maxPrice=500&minVolume=10000000"
 ```
 
 ## 🏗️ Architecture
@@ -305,7 +453,10 @@ app/api/                # API route handlers
 ├── historical/route.ts # Historical data endpoint
 ├── strategy/route.ts   # Strategy analysis endpoint
 ├── strategies/route.ts # List strategies endpoint
-└── stats/route.ts      # System statistics endpoint
+├── stats/route.ts      # System statistics endpoint
+├── portfolio/route.ts  # Portfolio management endpoint
+├── watchlist/route.ts  # Watchlist management endpoint
+└── screener/route.ts   # Stock screening endpoint
 ```
 
 ### Data Flow
