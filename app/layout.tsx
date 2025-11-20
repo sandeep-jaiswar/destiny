@@ -1,22 +1,31 @@
 import type { Metadata } from "next";
-import { inter, jetbrainsMono } from "./fonts";
-
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
+const jetBrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: "Destiny Trading Platform",
-  description: "Professional Bloomberg-inspired trading interface",
+  title: "Destiny",
+  description: "Nextjs App for stock analysis and portfolio management",
 };
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body>{children}</body>
+    <html lang="en">
+      <body
+        className={`${jetBrainsMono.variable} antialiased`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
+
+export default RootLayout;
