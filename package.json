@@ -12,8 +12,8 @@
     "@reduxjs/toolkit": "^2.11.1",
     "lightweight-charts": "^5.0.9",
     "next": "^16.0.8",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "react": "19.2.1",
+    "react-dom": "19.2.1",
     "react-redux": "^9.2.0",
     "yahoo-finance2": "^3.10.2"
   },
