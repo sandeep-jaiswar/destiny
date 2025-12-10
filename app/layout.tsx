@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
+import { ReduxProvider } from "./store/ReduxProvider";
 import "./globals.css";
 
 const jetBrainsMono = JetBrains_Mono({
@@ -22,7 +23,9 @@ const RootLayout = ({
       <body
         className={`${jetBrainsMono.variable} antialiased`}
       >
-        {children}
+        <ReduxProvider>
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   );
