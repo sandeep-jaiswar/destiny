@@ -1,21 +1,32 @@
 import YahooFinance from "yahoo-finance2";
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const yahooFinance = new YahooFinance({
     suppressNotices: ["yahooSurvey"],
 });
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
-        console.log("Fetching quote data...");
+        const searchParams = request.nextUrl.searchParams;
+        const symbol = searchParams.get('symbol') || 'AAPL';
 
-        const quote = await yahooFinance.quote("AAPL");
+        // Validate symbol: alphanumeric, dots, hyphens only (common in stock symbols)
+        if (!/^[A-Za-z0-9]+([.-][A-Za-z0-9]+)*$/.test(symbol)) {
+            return NextResponse.json(
+                { error: 'Invalid symbol format' },
+                { status: 400 }
+            );
+        }
+
+        console.log(`Fetching quote data for ${symbol}...`);
+
+        const quote = await yahooFinance.quote(symbol);
 
         return NextResponse.json(quote);
     } catch (error) {
         return NextResponse.json(
-            { error },
+            { error: 'Failed to fetch quote data' },
             { status: 500 }
         );
     }
