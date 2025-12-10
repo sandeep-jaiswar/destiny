@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
         const period2 = searchParams.get('period2') || '2024-01-01';
 
         // Validate symbol: alphanumeric, dots, hyphens only (common in stock symbols)
-        if (!/^[A-Za-z0-9.-]+$/.test(symbol)) {
+        if (!/^[A-Za-z0-9]+([.-][A-Za-z0-9]+)*$/.test(symbol)) {
             return NextResponse.json(
                 { error: 'Invalid symbol format' },
                 { status: 400 }
