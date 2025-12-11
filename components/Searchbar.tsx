@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import type { SearchResult } from "@/app/store";
+import type { SearchResult } from "@/store";
 
 export function Searchbar() {
   const [query, setQuery] = useState("");

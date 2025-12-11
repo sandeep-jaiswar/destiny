@@ -9,7 +9,7 @@ import {
   Time,
   LineSeries,
 } from "lightweight-charts";
-import type { ChartData } from "@/app/store";
+import type { ChartData } from "@/store";
 
 interface TVChartContainerProps {
   data: ChartData;

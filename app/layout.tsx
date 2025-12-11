@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
-import { ReduxProvider } from "./store";
+import { ReduxProvider } from "../store";
 import "./globals.css";
 
 const jetBrainsMono = JetBrains_Mono({
