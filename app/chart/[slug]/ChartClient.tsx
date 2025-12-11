@@ -1,7 +1,7 @@
 'use client';
 
 import { TVChartContainer } from "@/app/components/TVChartContainer";
-import { useGetChartDataQuery } from "@/app/store/chartApi";
+import { useGetChartDataQuery } from "@/app/store";
 
 interface ChartClientProps {
   symbol: string;

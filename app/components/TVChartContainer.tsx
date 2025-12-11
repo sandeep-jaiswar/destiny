@@ -9,26 +9,7 @@ import {
   Time,
   LineSeries,
 } from "lightweight-charts";
-
-interface Quote {
-  date: string;
-  high: number;
-  volume: number;
-  open: number;
-  low: number;
-  close: number;
-  adjclose: number;
-}
-
-interface ChartData {
-  meta: {
-    symbol: string;
-    longName?: string;
-    regularMarketPrice?: number;
-    currency?: string;
-  };
-  quotes: Quote[];
-}
+import type { ChartData } from "@/app/store";
 
 interface TVChartContainerProps {
   data: ChartData;

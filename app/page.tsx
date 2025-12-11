@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Searchbar } from "./components/Searchbar";
 
 const Home = () => {
   return (
@@ -15,12 +16,7 @@ const Home = () => {
           />
         </div>
         <div className="flex-1 max-w-2xl">
-          <input
-            placeholder="Search stocks, symbols, or portfolio..."
-            className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xs
-                     text-white placeholder-gray-400 focus:outline-none focus:ring-2 
-                     focus:white focus:border-transparent transition-all"
-          />
+          <Searchbar />
         </div>
       </header>
     </main>
