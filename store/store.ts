@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { chartApi } from './services/chartApi';
+import configReducer from './slices/configSlice';
 
 /**
  * Redux store configuration
@@ -10,6 +11,8 @@ export const store = configureStore({
   reducer: {
     // RTK Query APIs
     [chartApi.reducerPath]: chartApi.reducer,
+    // Slices
+    config: configReducer,
     // Add other reducers here as the app grows
   },
   middleware: (getDefaultMiddleware) =>

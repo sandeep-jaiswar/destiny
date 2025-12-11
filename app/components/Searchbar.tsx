@@ -1,8 +1,8 @@
 "use client";
-
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import type { SearchResult } from "@/store";
+import { useAppDispatch } from "@/store";
+import { setSelectedTicker } from "@/store";
 
 export function Searchbar() {
   const [query, setQuery] = useState("");
@@ -11,7 +11,7 @@ export function Searchbar() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const searchRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const dispatch = useAppDispatch();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -60,12 +60,11 @@ export function Searchbar() {
   const handleSelect = (symbol: string) => {
     setQuery("");
     setIsOpen(false);
-    router.push(`/chart/${symbol}`);
+    dispatch(setSelectedTicker(symbol));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!isOpen) return;
-
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
@@ -146,13 +145,11 @@ export function Searchbar() {
                       </span>
                     )}
                   </div>
-                  
                   {/* Company Name */}
                   <div className="text-xs text-gray-400 truncate font-normal">
                     {result.longname || result.shortname || "N/A"}
                   </div>
                 </div>
-                
                 {/* Asset Type Badge */}
                 {result.typeDisp && (
                   <span className="text-[10px] text-orange-400/80 font-bold uppercase tracking-wider 

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import { ReduxProvider } from "../store";
-import "./globals.css";
+import "./styles/globals.css";
+import React from "react";
 
 const jetBrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -15,20 +16,23 @@ export const metadata: Metadata = {
 
 const RootLayout = ({
   children,
+  chart,
 }: Readonly<{
   children: React.ReactNode;
+  chart: React.ReactNode;
 }>) => {
   return (
     <html lang="en">
-      <body
-        className={`${jetBrainsMono.variable} antialiased`}
-      >
+      <body className={`${jetBrainsMono.variable} antialiased`}>
         <ReduxProvider>
-          {children}
+          <main className="min-h-screen bg-linear-to-br from-gray-900 via-black to-gray-900 text-white">
+            {children}
+            {chart}
+          </main>
         </ReduxProvider>
       </body>
     </html>
   );
-}
+};
 
 export default RootLayout;

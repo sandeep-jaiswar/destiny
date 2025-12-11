@@ -9,16 +9,33 @@ export { ReduxProvider } from './ReduxProvider';
 
 // Types
 export type { RootState, AppDispatch } from './store';
-export type { 
-  Quote, 
-  ChartMeta, 
-  ChartData, 
+export type {
+  Quote,
+  ChartMeta,
+  ChartData,
   SearchResult,
-  TradingPeriod 
+  TradingPeriod
 } from './types';
+export type { AppConfig } from './slices/configSlice';
 
 // Hooks
-export { useAppDispatch, useAppSelector } from './hooks';
+export {
+  useAppDispatch,
+  useAppSelector,
+  useAppConfig,
+  useSelectedTicker,
+  useCurrentDate,
+  useDateRange,
+} from './hooks';
 
 // RTK Query APIs
 export { chartApi, useGetChartDataQuery, useLazyGetChartDataQuery } from './services/chartApi';
+
+// Config Actions
+export {
+  setSelectedTicker,
+  clearSelectedTicker,
+  setTheme,
+  setDateRange,
+  updateCurrentDate,
+} from './slices/configSlice';
