@@ -28,10 +28,7 @@ const DrivPage = () => (
 );
 
 const EePage = () => (
-  <div className="p-4">
-    <h2>Earnings & Estimates</h2>
-    <p>Comprehensive earnings data and analyst estimates...</p>
-  </div>
+  <div className="p-4"><h2>Earnings & Estimates</h2><p>Live data for Earnings & Estimates...</p></div>
 );
 
 const BrccPage = () => (
