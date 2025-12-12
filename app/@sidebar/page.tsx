@@ -81,26 +81,26 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
 
 export default function SidebarPage() {
   return (
-    <aside className="w-full h-[calc(100vh-48px)] bg-(--sidebar-bg) border-r-2 border-(--sidebar-border) flex flex-col font-mono text-[14px] select-none shadow-2xl" role="complementary" aria-label="Sidebar">
+    <aside className="w-full h-[calc(100vh-48px)] bg-[var(--sidebar-bg)] border-r-2 border-[var(--sidebar-border)] flex flex-col font-mono text-[14px] select-none shadow-2xl" role="complementary" aria-label="Sidebar">
       <nav className="flex-1 overflow-y-auto pt-2" role="navigation" aria-label="Main sections">
         <Accordion type="single" collapsible className="w-full" defaultValue={SIDEBAR_ITEMS[0]?.label}>
           {SIDEBAR_ITEMS.map((item) => (
             <AccordionItem key={item.label} value={item.label} className="border-none">
               <AccordionTrigger
                 className="w-full flex items-center justify-between px-3 py-2 text-left rounded-none border-l-4 transition-colors duration-100
-                  data-[state=open]:bg-(--sidebar-active-bg) data-[state=open]:border-(--sidebar-accent) data-[state=open]:text-(--sidebar-accent) data-[state=open]:font-bold
-                  data-[state=closed]:border-transparent data-[state=closed]:text-(--sidebar-fg) data-[state=closed]:hover:bg-(--sidebar-active-bg) data-[state=closed]:hover:text-(--sidebar-accent) data-[state=closed]:hover:border-(--sidebar-accent)"
+                  data-[state=open]:bg-[var(--sidebar-active-bg)] data-[state=open]:border-[var(--sidebar-accent)] data-[state=open]:text-[var(--sidebar-accent)] data-[state=open]:font-bold
+                  data-[state=closed]:border-transparent data-[state=closed]:text-[var(--sidebar-fg)] data-[state=closed]:hover:bg-[var(--sidebar-active-bg)] data-[state=closed]:hover:text-[var(--sidebar-accent)] data-[state=closed]:hover:border-[var(--sidebar-accent)]"
               >
                 <span>{item.label}</span>
               </AccordionTrigger>
-              <AccordionContent className="pl-7 py-1 border-l-2 border-(--sidebar-accent) bg-(--sidebar-bg)">
-                <div className="px-2 py-1.5 text-(--sidebar-accent) font-semibold text-[13px] mb-1">{item.label}</div>
+              <AccordionContent className="pl-7 py-1 border-l-2 border-[var(--sidebar-accent)] bg-[var(--sidebar-bg)]">
+                <div className="px-2 py-1.5 text-[var(--sidebar-accent)] font-semibold text-[13px] mb-1">{item.label}</div>
                 <ul className="space-y-0.5">
                   {item.children.map((child) => (
                     <li key={child.label + child.href}>
                       <Link
-                        href={`${child.href}`}
-                        className="block px-2 py-1.5 rounded text-(--sidebar-fg) hover:text-(--sidebar-accent) hover:bg-(--sidebar-active-bg) transition-colors duration-75 text-[13px]"
+                        href={child.href}
+                        className="block px-2 py-1.5 rounded text-[var(--sidebar-fg)] hover:text-[var(--sidebar-accent)] hover:bg-[var(--sidebar-active-bg)] transition-colors duration-75 text-[13px]"
                         prefetch={false}
                       >
                         {child.label}
