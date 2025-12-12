@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ContentKey } from '../types/contentKey';
 
+// Define the AppConfig interface
 export interface AppConfig {
   selectedTicker: string | null;
   currentDate: string;
@@ -9,7 +9,6 @@ export interface AppConfig {
     period1: string;
     period2: string;
   };
-  contentKey: ContentKey;
 }
 
 const initialState: AppConfig = {
@@ -20,7 +19,6 @@ const initialState: AppConfig = {
     period1: '2023-01-01',
     period2: '2024-01-01',
   },
-  contentKey: ContentKey.SecurityDescription,
 };
 
 const configSlice = createSlice({
@@ -42,9 +40,6 @@ const configSlice = createSlice({
     updateCurrentDate: (state) => {
       state.currentDate = new Date().toISOString().split('T')[0];
     },
-    setContentKey: (state, action: PayloadAction<ContentKey>) => {
-      state.contentKey = action.payload;
-    },
   },
 });
 
@@ -54,7 +49,6 @@ export const {
   setTheme,
   setDateRange,
   updateCurrentDate,
-  setContentKey,
 } = configSlice.actions;
 
 export default configSlice.reducer;

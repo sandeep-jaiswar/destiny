@@ -1,0 +1,28 @@
+import { ContentKey } from "./contentKey";
+
+export const ContentKeyToRoute: Record<ContentKey, string> = {
+  [ContentKey.SecurityDescription]: "/des",
+  [ContentKey.MifidDescriptiveData]: "/mifid",
+  [ContentKey.CompanyFilings]: "/cf",
+  [ContentKey.IndividualCompanyNews]: "/gn",
+  [ContentKey.FinancialAnalysis]: "/fa",
+  [ContentKey.OwnershipSummary]: "/own",
+  [ContentKey.Drivers]: "/driv",
+  [ContentKey.EarningsEstimates]: "/ee",
+  [ContentKey.ResearchPortal]: "/brcc",
+  [ContentKey.B1CompanyPrimer]: "/b1co",
+  [ContentKey.EquityRelativeValuation]: "/eqrv",
+  [ContentKey.RelativeValuation]: "/rv",
+  [ContentKey.LineChart]: "/gp",
+  [ContentKey.GraphFundamentals]: "/gfp",
+  [ContentKey.CompanyMap]: "/cmap",
+  [ContentKey.CompanyEvents]: "/evt",
+  [ContentKey.BloombergQuote]: "/bq",
+  [ContentKey.IOIAdvertOverview]: "/ioia",
+  [ContentKey.MarketDepthMonitor]: "/mdw",
+  [ContentKey.PriceVolDashboard]: "/wvap",
+  [ContentKey.BrokerRankings]: "/rank",
+  [ContentKey.TradingPerformance]: "/tp",
+  [ContentKey.VenueAnalytics]: "/venu",
+  [ContentKey.OptionMonitor]: "/omon",
+};

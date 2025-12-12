@@ -13,10 +13,10 @@ export async function GET() {
 
         return NextResponse.json(result);
     } catch (error) {
-        console.error('Error fetching daily gainers:', error);
-        return NextResponse.json(
-            { error: 'Failed to fetch daily gainers' },
-            { status: 500 }
-        );
+            console.error('Error fetching daily gainers:', error);
+            return NextResponse.json(
+                { error: 'An unexpected error occurred. Please try again later.' },
+                { status: 500 }
+            );
     }
 }

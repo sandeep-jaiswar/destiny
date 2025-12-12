@@ -11,13 +11,12 @@ export async function POST(request: NextRequest) {
         const result = await yahooFinance.historical(symbol, {
             period1,
             interval,
-        })
-
+        });
         return NextResponse.json(result);
     } catch (error) {
-        console.error('Error fetching daily gainers:', error);
+        console.error('Error fetching historical data:', error);
         return NextResponse.json(
-            { error: 'Failed to fetch daily gainers' },
+            { error: 'An unexpected error occurred. Please try again later.' },
             { status: 500 }
         );
     }
