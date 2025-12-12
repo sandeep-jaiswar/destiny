@@ -1,5 +1,5 @@
-// This file is required for Next.js parallel routes (@chart slot)
+// This file is required for Next.js parallel routes (@overview slot)
 // It renders nothing but is needed to avoid routing errors.
-export default function DefaultChart() {
+export default function Default() {
   return null;
 }

@@ -15,7 +15,7 @@ export async function GET() {
     } catch (error) {
         console.error('Error fetching daily gainers:', error);
         return NextResponse.json(
-            { error: 'Failed to fetch daily gainers' },
+            { error: 'An unexpected error occurred. Please try again later.' },
             { status: 500 }
         );
     }

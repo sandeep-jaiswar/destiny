@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         console.error('Error fetching autosuggest:', error);
         return NextResponse.json(
-            { error: 'Failed to fetch suggestions' },
+            { error: 'An unexpected error occurred. Please try again later.' },
             { status: 500 }
         );
     }

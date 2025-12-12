@@ -38,5 +38,4 @@ export {
   setTheme,
   setDateRange,
   updateCurrentDate,
-  setContentKey,
 } from './slices/configSlice';

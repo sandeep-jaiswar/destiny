@@ -30,8 +30,9 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json(quote);
     } catch (error) {
+        console.error('Error fetching chart data:', error);
         return NextResponse.json(
-            { error },
+            { error: 'An unexpected error occurred. Please try again later.' },
             { status: 500 }
         );
     }

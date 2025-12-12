@@ -1,4 +1,4 @@
-// This file is required for Next.js parallel routes (@chart slot)
+// This file is required for Next.js parallel routes (@content slot)
 // It renders nothing but is needed to avoid routing errors.
 export default function Default() {
   return null;
