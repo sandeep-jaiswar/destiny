@@ -1,5 +1,5 @@
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
+const ContentLayout = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-export default RootLayout;
+export default ContentLayout;
