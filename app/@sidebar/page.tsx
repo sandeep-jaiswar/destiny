@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 
 interface SidebarChild {
   label: string;
@@ -84,7 +83,7 @@ export default function Sidebar() {
   const [open, setOpen] = useState<string | null>(SIDEBAR_ITEMS[0]?.label || null);
 
   return (
-    <aside className="w-60 h-[calc(100vh-48px)] bg-[#18191A] border-r-2 border-[#232324] flex flex-col font-mono text-[14px] select-none shadow-2xl">
+    <aside className="w-full h-[calc(100vh-48px)] bg-[#18191A] border-r-2 border-[#232324] flex flex-col font-mono text-[14px] select-none shadow-2xl">
       <nav className="flex-1 overflow-y-auto pt-2">
         <ul className="space-y-0.5">
           {SIDEBAR_ITEMS.map((item) => (
