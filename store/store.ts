@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { chartApi } from './services/chartApi';
 import configReducer from './slices/configSlice';
+import { createLogger } from 'redux-logger';
 
 /**
  * Redux store configuration
@@ -15,18 +16,17 @@ export const store = configureStore({
     config: configReducer,
     // Add other reducers here as the app grows
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      // Configure middleware options if needed
+  middleware: (getDefaultMiddleware) => {
+    const middleware = getDefaultMiddleware({
       serializableCheck: {
-        // Ignore these action types for serialization check
         ignoredActions: ['chartApi/executeMutation/fulfilled'],
       },
-    }).concat(
-      // RTK Query middleware
-      chartApi.middleware,
-      // Add other middleware here
-    ),
+    }).concat(chartApi.middleware);
+    if (process.env.NODE_ENV !== 'production') {
+      middleware.push(createLogger({ collapsed: true }));
+    }
+    return middleware;
+  },
   devTools: process.env.NODE_ENV !== 'production',
 });
 

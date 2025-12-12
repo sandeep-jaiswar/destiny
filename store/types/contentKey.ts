@@ -1,0 +1,27 @@
+// Enum for all content keys/pages
+export enum ContentKey {
+  SecurityDescription = "des",
+  MifidDescriptiveData = "mifid",
+  CompanyFilings = "cf",
+  IndividualCompanyNews = "gn",
+  FinancialAnalysis = "fa",
+  OwnershipSummary = "own",
+  Drivers = "driv",
+  EarningsEstimates = "ee",
+  ResearchPortal = "brcc",
+  B1CompanyPrimer = "b1co",
+  EquityRelativeValuation = "eqrv",
+  RelativeValuation = "rv",
+  LineChart = "gp",
+  GraphFundamentals = "gfp",
+  CompanyMap = "cmap",
+  CompanyEvents = "evt",
+  BloombergQuote = "bq",
+  IOIAdvertOverview = "ioia",
+  MarketDepthMonitor = "mdw",
+  PriceVolDashboard = "wvap",
+  BrokerRankings = "rank",
+  TradingPerformance = "tp",
+  VenueAnalytics = "venu",
+  OptionMonitor = "omon"
+}

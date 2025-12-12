@@ -1,11 +1,11 @@
 import YahooFinance from "yahoo-finance2";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 const yahooFinance = new YahooFinance({
     suppressNotices: ["yahooSurvey"],
 });
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         const result = await yahooFinance.screener({
             scrIds: "day_gainers",
