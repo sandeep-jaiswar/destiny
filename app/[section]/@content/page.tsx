@@ -1,3 +1,5 @@
+import React from 'react';
+
 // Content components for each section
 const DesPage = () => (
   <div className="p-4"><h2>Security Description</h2><p>Live data for Security Description...</p></div>
@@ -96,7 +98,7 @@ const OmonPage = () => (
 );
 
 // Map section keys to components
-const sectionComponents: Record<string, () => JSX.Element> = {
+const sectionComponents: Record<string, () => React.JSX.Element> = {
   des: DesPage,
   mifid: MifidPage,
   cf: CfPage,
