@@ -1,11 +1,12 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import type { SearchResult } from "@/store";
-import { useAppDispatch } from "@/store";
+import { useAppDispatch, useSelectedTicker } from "@/store";
 import { setSelectedTicker } from "@/store";
 
 export function Searchbar() {
-  const [query, setQuery] = useState("");
+  const selectedTicker = useSelectedTicker();
+  const [query, setQuery] = useState<string>(selectedTicker || "");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,15 +29,20 @@ export function Searchbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Fetch suggestions
+  // Only fetch suggestions if input is dirty (not equal to selectedTicker)
   useEffect(() => {
+    if (query === selectedTicker) {
+      setResults([]);
+      setIsOpen(false);
+      setIsLoading(false);
+      return;
+    }
     const fetchSuggestions = async () => {
       if (query.length < 1) {
         setResults([]);
         setIsOpen(false);
         return;
       }
-
       setIsLoading(true);
       try {
         const response = await fetch(
@@ -52,13 +58,12 @@ export function Searchbar() {
         setIsLoading(false);
       }
     };
-
     const debounceTimer = setTimeout(fetchSuggestions, 300);
     return () => clearTimeout(debounceTimer);
-  }, [query]);
+  }, [query, selectedTicker]);
 
   const handleSelect = (symbol: string) => {
-    setQuery("");
+    setQuery(symbol);
     setIsOpen(false);
     dispatch(setSelectedTicker(symbol));
   };
@@ -113,7 +118,7 @@ export function Searchbar() {
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() =>
-            query.length > 0 && results.length > 0 && setIsOpen(true)
+            query && query.length > 0 && results.length > 0 && setIsOpen(true)
           }
           placeholder="SEARCH STOCKS & SYMBOLS"
           className="w-full pl-11 pr-10 py-2.5 bg-black/40 border-b-2 border-orange-600/60
