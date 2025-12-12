@@ -11,7 +11,7 @@ export interface AppConfig {
 }
 
 const initialState: AppConfig = {
-  selectedTicker: null,
+  selectedTicker: 'marksans.ns',
   currentDate: new Date().toISOString().split('T')[0],
   theme: 'dark',
   dateRange: {

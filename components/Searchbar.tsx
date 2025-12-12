@@ -93,8 +93,18 @@ export function Searchbar() {
       {/* Search Input - Bloomberg Style */}
       <div className="relative group">
         <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
         </div>
         <input
@@ -127,9 +137,10 @@ export function Searchbar() {
               onClick={() => handleSelect(result.symbol)}
               onMouseEnter={() => setSelectedIndex(index)}
               className={`w-full px-4 py-2.5 text-left transition-all duration-150 border-b border-gray-800/50
-                ${selectedIndex === index 
-                  ? "bg-orange-600/20 border-l-2 border-l-orange-500" 
-                  : "hover:bg-gray-900/50"
+                ${
+                  selectedIndex === index
+                    ? "bg-orange-600/20 border-l-2 border-l-orange-500"
+                    : "hover:bg-gray-900/50"
                 }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -152,8 +163,10 @@ export function Searchbar() {
                 </div>
                 {/* Asset Type Badge */}
                 {result.typeDisp && (
-                  <span className="text-[10px] text-orange-400/80 font-bold uppercase tracking-wider 
-                                 bg-orange-900/20 px-2 py-0.5 rounded shrink-0 border border-orange-900/30">
+                  <span
+                    className="text-[10px] text-orange-400/80 font-bold uppercase tracking-wider 
+                                 bg-orange-900/20 px-2 py-0.5 rounded shrink-0 border border-orange-900/30"
+                  >
                     {result.typeDisp}
                   </span>
                 )}

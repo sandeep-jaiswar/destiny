@@ -1,10 +1,9 @@
 'use client';
 
-import { TVChartContainer } from "../components/TVChartContainer";
+import { TVChartContainer } from "../../components/TVChartContainer";
 import { useGetChartDataQuery, useSelectedTicker } from "@/store";
 
 export function ChartClient() {
-  // Read ticker from store, fallback to 'AAPL' if not set
   const selectedTicker = useSelectedTicker() || 'AAPL';
   const { data: chartData, isLoading, isError } = useGetChartDataQuery({
     symbol: selectedTicker.toUpperCase(),

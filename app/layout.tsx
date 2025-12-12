@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import { ReduxProvider } from "../store";
-import "./styles/globals.css";
-import React from "react";
+import type { ReactNode } from "react";
+
+import "../styles/globals.css";
 
 const jetBrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -10,16 +11,18 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Destiny",
+  title: "Jaiswar Securities | Home",
   description: "Nextjs App for stock analysis and portfolio management",
 };
 
 const RootLayout = ({
   children,
   chart,
+  sidebar,
 }: Readonly<{
-  children: React.ReactNode;
-  chart: React.ReactNode;
+  children: ReactNode;
+  chart: ReactNode;
+  sidebar: ReactNode;
 }>) => {
   return (
     <html lang="en">
@@ -27,7 +30,7 @@ const RootLayout = ({
         <ReduxProvider>
           <main className="min-h-screen bg-linear-to-br from-gray-900 via-black to-gray-900 text-white">
             {children}
-            {chart}
+            {sidebar}
           </main>
         </ReduxProvider>
       </body>

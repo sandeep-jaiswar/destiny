@@ -11,7 +11,6 @@ export async function GET(request: NextRequest) {
         const searchParams = request.nextUrl.searchParams;
         const symbol = searchParams.get('symbol') || 'AAPL';
 
-        // Validate symbol: alphanumeric, dots, hyphens only (common in stock symbols)
         if (!/^[A-Za-z0-9]+([.-][A-Za-z0-9]+)*$/.test(symbol)) {
             return NextResponse.json(
                 { error: 'Invalid symbol format' },

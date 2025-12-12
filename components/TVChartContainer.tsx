@@ -58,49 +58,19 @@ export const TVChartContainer = ({ data }: TVChartContainerProps) => {
       time: Math.floor(new Date(quote.date).getTime() / 1000) as Time,
       value: quote.close,
     }));
-
-    // Sort data by time
-    formattedData.sort((a, b) => (a.time as number) - (b.time as number));
-
     series.setData(formattedData);
 
-    // Fit content to view
-    chart.timeScale().fitContent();
-
-    // Handle window resize
+    // Responsive resize
     const handleResize = () => {
-      if (chartContainerRef.current && chartRef.current) {
-        chartRef.current.applyOptions({
-          width: chartContainerRef.current.clientWidth,
-        });
-      }
+      chart.resize(chartContainerRef.current!.clientWidth, 500);
     };
-
     window.addEventListener("resize", handleResize);
 
-    // Cleanup
     return () => {
       window.removeEventListener("resize", handleResize);
-      if (chartRef.current) {
-        chartRef.current.remove();
-        chartRef.current = null;
-      }
+      chart.remove();
     };
   }, [data]);
 
-  return (
-    <div className="w-full">
-      <div className="mb-4">
-        <h2 className="text-2xl font-bold">
-          {data.meta.longName || data.meta.symbol}
-        </h2>
-        {data.meta.regularMarketPrice && (
-          <p className="text-xl text-gray-700">
-            {data.meta.currency} {data.meta.regularMarketPrice.toFixed(2)}
-          </p>
-        )}
-      </div>
-      <div ref={chartContainerRef} className="w-full" />
-    </div>
-  );
+  return <div ref={chartContainerRef} style={{ width: "100%", height: 500 }} />;
 };
