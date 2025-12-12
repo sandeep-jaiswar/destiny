@@ -1,5 +1,7 @@
+"use client";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface SidebarChild {
   label: string;
@@ -79,7 +81,8 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
 ];
 
 
-export default function SidebarPage() {
+export const Sidebar = () => {
+  const pathname = usePathname();
   return (
     <aside className="w-full h-[calc(100vh-48px)] bg-[var(--sidebar-bg)] border-r-2 border-[var(--sidebar-border)] flex flex-col font-mono text-[14px] select-none shadow-2xl" role="complementary" aria-label="Sidebar">
       <nav className="flex-1 overflow-y-auto pt-2" role="navigation" aria-label="Main sections">
@@ -96,17 +99,21 @@ export default function SidebarPage() {
               <AccordionContent className="pl-7 py-1 border-l-2 border-[var(--sidebar-accent)] bg-[var(--sidebar-bg)]">
                 <div className="px-2 py-1.5 text-[var(--sidebar-accent)] font-semibold text-[13px] mb-1">{item.label}</div>
                 <ul className="space-y-0.5">
-                  {item.children.map((child) => (
-                    <li key={child.label + child.href}>
-                      <Link
-                        href={child.href}
-                        className="block px-2 py-1.5 rounded text-[var(--sidebar-fg)] hover:text-[var(--sidebar-accent)] hover:bg-[var(--sidebar-active-bg)] transition-colors duration-75 text-[13px]"
-                        prefetch={false}
-                      >
-                        {child.label}
-                      </Link>
-                    </li>
-                  ))}
+                  {item.children.map((child) => {
+                    const isActive = pathname === child.href;
+                    return (
+                      <li key={child.label + child.href}>
+                        <Link
+                          href={child.href}
+                          className={`block px-2 py-1.5 rounded text-[var(--sidebar-fg)] hover:text-[var(--sidebar-accent)] hover:bg-[var(--sidebar-active-bg)] transition-colors duration-75 text-[13px] ${isActive ? 'bg-[var(--sidebar-active-bg)] text-[var(--sidebar-accent)] font-bold' : ''}`}
+                          prefetch={true}
+                          
+                        >
+                          {child.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
               </AccordionContent>
             </AccordionItem>
