@@ -257,8 +257,8 @@ const CompanyOverview: React.FC<CompanyOverviewProps> = ({ data }) => {
             KEY EXECUTIVES
           </h2>
           <div className="space-y-3">
-            {data.assetProfile?.companyOfficers?.slice(0, 4).map((officer, index: number) => (
-              <div key={index} className="border-b border-gray-800 pb-3 last:border-0">
+            {data.assetProfile?.companyOfficers?.slice(0, 4).map((officer) => (
+              <div key={`${officer.name}-${officer.title}`} className="border-b border-gray-800 pb-3 last:border-0">
                 <p className="font-semibold text-orange-500">{officer.name}</p>
                 <p className="text-sm text-gray-400">{officer.title}</p>
                 {officer.totalPay?.fmt && (
