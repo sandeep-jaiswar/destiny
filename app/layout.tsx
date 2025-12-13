@@ -6,13 +6,18 @@ import { ThemeProvider } from "next-themes";
 
 import "../styles/globals.css";
 
-const Searchbar = dynamic(() => import("@/components/Searchbar").then(mod => mod.Searchbar));
+const Searchbar = dynamic(() =>
+  import("@/components/Searchbar").then((mod) => mod.Searchbar)
+);
+
+const Sidebar = dynamic(() =>
+  import("@/components/Sidebar").then((mod) => mod.Sidebar)
+);
 
 export const metadata: Metadata = {
   title: "Jaiswar Securities | Home",
   description: "Nextjs App for stock analysis and portfolio management",
 };
-
 
 type RootLayoutProps = {
   children: ReactNode;
@@ -29,7 +34,12 @@ const RootLayout = ({ children }: RootLayoutProps) => (
                 <Searchbar />
               </div>
             </header>
-            {children}
+            <section className="grid grid-cols-12">
+              <div className="col-span-2">
+                <Sidebar />
+              </div>
+              <div className="col-span-10">{children}</div>
+            </section>
           </main>
         </ReduxProvider>
       </ThemeProvider>
