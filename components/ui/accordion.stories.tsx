@@ -17,6 +17,10 @@ const meta = {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  args: {
+    type: "single",
+    collapsible: true,
+  },
 } satisfies Meta<typeof Accordion>;
 
 export default meta;
