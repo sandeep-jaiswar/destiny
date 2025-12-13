@@ -47,7 +47,7 @@ export const Default: Story = {
 export const SymbolSearch: Story = {
   args: {
     type: 'text',
-    placeholder: 'Enter symbol (e.g., AAPL, TSLA, GOOGL)',
+    placeholder: 'Search for stocks (e.g., AAPL, TSLA, GOOGL)',
   },
 };
 

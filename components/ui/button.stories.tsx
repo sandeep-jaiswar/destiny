@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './button';
 
 /**
- * Button component from shadcn/ui with multiple variants and sizes.
+ * Button component with multiple variants and sizes.
  * Used throughout the Destiny trading platform for user interactions.
  */
 const meta = {
@@ -20,7 +20,7 @@ const meta = {
     },
     size: {
       control: 'select',
-      options: ['default', 'sm', 'lg', 'icon'],
+      options: ['default', 'sm', 'lg', 'icon', 'icon-sm', 'icon-lg'],
       description: 'Size of the button',
     },
     asChild: {
@@ -125,6 +125,26 @@ export const Icon: Story = {
   args: {
     children: '📈',
     size: 'icon',
+  },
+};
+
+/**
+ * Small icon button
+ */
+export const IconSmall: Story = {
+  args: {
+    children: '🔍',
+    size: 'icon-sm',
+  },
+};
+
+/**
+ * Large icon button
+ */
+export const IconLarge: Story = {
+  args: {
+    children: '⚙️',
+    size: 'icon-lg',
   },
 };
 
