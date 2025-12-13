@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
-
+// This file ensures the root ("/") route renders the overview and streaming content via parallel routes.
 export default function Home() {
-  redirect('/dashboard');
+  // Content is handled by parallel routes (@overview, @content, @sidebar)
+  return null;
 }

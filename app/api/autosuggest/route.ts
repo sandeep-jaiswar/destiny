@@ -1,5 +1,4 @@
 import YahooFinance from "yahoo-finance2";
-
 import { NextRequest, NextResponse } from "next/server";
 
 const yahooFinance = new YahooFinance({
@@ -9,22 +8,19 @@ const yahooFinance = new YahooFinance({
 export async function GET(request: NextRequest) {
     try {
         const searchParams = request.nextUrl.searchParams;
-        const symbol = searchParams.get('symbol') || 'AAPL';
+        const query = searchParams.get('query') || '';
 
-        if (!/^[A-Za-z0-9]+([.-][A-Za-z0-9]+)*$/.test(symbol)) {
-            return NextResponse.json(
-                { error: 'Invalid symbol format' },
-                { status: 400 }
-            );
+        if (!query || query.length < 1) {
+            return NextResponse.json([]);
         }
 
-        console.log(`Fetching quote data for ${symbol}...`);
+        console.log(`Searching for: ${query}`);
 
-        const quote = await yahooFinance.quote(symbol);
+        const result = await yahooFinance.search(query);
 
-        return NextResponse.json(quote);
+        return NextResponse.json(result.quotes || []);
     } catch (error) {
-        console.error('Error fetching quote:', error);
+        console.error('Error fetching autosuggest:', error);
         return NextResponse.json(
             { error: 'An unexpected error occurred. Please try again later.' },
             { status: 500 }

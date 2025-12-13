@@ -1,20 +1,19 @@
 import YahooFinance from "yahoo-finance2";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 const yahooFinance = new YahooFinance({
     suppressNotices: ["yahooSurvey"],
 });
 
-export async function POST(request: NextRequest) {
+export async function GET() {
     try {
-        const { symbol, period1, interval = "1d" } = await request.json();
-        const result = await yahooFinance.historical(symbol, {
-            period1,
-            interval,
+        const result = await yahooFinance.screener({
+            scrIds: "day_losers",
         });
+
         return NextResponse.json(result);
     } catch (error) {
-        console.error('Error fetching historical data:', error);
+        console.error('Error fetching daily losers:', error);
         return NextResponse.json(
             { error: 'An unexpected error occurred. Please try again later.' },
             { status: 500 }
