@@ -1,11 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useSelector } from 'react-redux';
-import type { RootState } from '@/store';
+import type { CompanyData } from './types';
 
 interface CompanyOverviewProps {
-  data: any;
+  data: CompanyData | null;
 }
 
 const CompanyOverview: React.FC<CompanyOverviewProps> = ({ data }) => {
@@ -27,7 +26,7 @@ const CompanyOverview: React.FC<CompanyOverviewProps> = ({ data }) => {
   const currentPrice = price.regularMarketPrice?.fmt || summaryDetail.previousClose?.fmt || 'N/A';
   const priceChange = price.regularMarketChange?.fmt || 'N/A';
   const priceChangePercent = price.regularMarketChangePercent?.fmt || 'N/A';
-  const isPositive = price.regularMarketChange?.raw >= 0;
+  const isPositive = (price.regularMarketChange?.raw ?? 0) >= 0;
 
   return (
     <div className="p-6 space-y-6">
@@ -258,7 +257,7 @@ const CompanyOverview: React.FC<CompanyOverviewProps> = ({ data }) => {
             KEY EXECUTIVES
           </h2>
           <div className="space-y-3">
-            {data.assetProfile?.companyOfficers?.slice(0, 4).map((officer: any, index: number) => (
+            {data.assetProfile?.companyOfficers?.slice(0, 4).map((officer, index: number) => (
               <div key={index} className="border-b border-gray-800 pb-3 last:border-0">
                 <p className="font-semibold text-orange-500">{officer.name}</p>
                 <p className="text-sm text-gray-400">{officer.title}</p>

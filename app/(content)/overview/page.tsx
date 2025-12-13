@@ -5,10 +5,11 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '@/store';
 import CompanyOverview from './CompanyOverview';
 import { mockCompanyData } from './mockData';
+import type { CompanyData } from './types';
 
 const Overview = () => {
   const selectedTicker = useSelector((state: RootState) => state.config.selectedTicker);
-  const [data, setData] = React.useState<any>(null);
+  const [data, setData] = React.useState<CompanyData | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
