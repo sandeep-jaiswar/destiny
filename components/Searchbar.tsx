@@ -119,6 +119,20 @@ export function Searchbar() {
 
   const showPopover = results.length > 0;
 
+  // Accessibility: live region for screen readers
+  const [ariaMessage, setAriaMessage] = useState("");
+  useEffect(() => {
+    if (isLoading) {
+      setAriaMessage("Loading suggestions...");
+    } else if (results.length === 0 && debouncedQuery.length > 0) {
+      setAriaMessage("No results found.");
+    } else if (results.length > 0) {
+      setAriaMessage(`${results.length} result${results.length > 1 ? 's' : ''} available${selectedIndex >= 0 ? ', ' + results[selectedIndex].symbol + ' selected' : ''}`);
+    } else {
+      setAriaMessage("");
+    }
+  }, [isLoading, results, selectedIndex, debouncedQuery]);
+
   return (
     <Popover open={showPopover}>
       <PopoverTrigger asChild>
@@ -143,7 +157,27 @@ export function Searchbar() {
             aria-activedescendant={selectedIndex >= 0 ? `result-${selectedIndex}` : undefined}
             role="combobox"
             aria-expanded={showPopover}
+            aria-describedby="searchbar-aria-message"
           />
+          {/* Visually hidden live region for screen readers */}
+          <span
+            id="searchbar-aria-message"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            style={{
+              position: "absolute",
+              width: "1px",
+              height: "1px",
+              margin: "-1px",
+              padding: 0,
+              overflow: "hidden",
+              clip: "rect(0 0 0 0)",
+              border: 0,
+            }}
+          >
+            {ariaMessage}
+          </span>
           {isLoading && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
               <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
