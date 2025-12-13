@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "lighthouse": "lighthouse http://localhost:3000 --output html --output-path ./lighthouse-report.html --chrome-flags='--headless'",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -47,6 +48,7 @@
     "@vitest/coverage-v8": "^4.0.15",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
+    "lighthouse": "^13.0.1",
     "playwright": "^1.57.0",
     "storybook": "^10.1.8",
     "tailwindcss": "^4",
