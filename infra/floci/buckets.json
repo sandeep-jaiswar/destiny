@@ -1,0 +1,95 @@
+{
+  "bucket": "destiny-lake",
+  "description": "Single bucket for all Destiny data lake datasets",
+  "warehouse_root": "s3://destiny-lake/warehouse",
+  "datasets": {
+    "equities": {
+      "bhavcopy": {
+        "prefix": "equities/bhavcopy",
+        "partition_by": ["year", "month"],
+        "description": "Daily equity bhavcopy (OHLC, volume, turnover)"
+      },
+      "adjustment_factors": {
+        "prefix": "equities/adjustment_factors",
+        "partition_by": ["symbol"],
+        "description": "Split/bonus adjustment factors per symbol"
+      }
+    },
+    "indices": {
+      "history": {
+        "prefix": "indices/history",
+        "partition_by": ["index_name", "year", "month"],
+        "description": "Daily index history (OHLC, volume)"
+      }
+    },
+    "derivatives": {
+      "fo_bhavcopy": {
+        "prefix": "derivatives/fo_bhavcopy",
+        "partition_by": ["year", "month"],
+        "description": "Futures & Options bhavcopy"
+      }
+    },
+    "commodities": {
+      "mcx": {
+        "prefix": "commodities/mcx",
+        "partition_by": ["year", "month"],
+        "description": "MCX commodity futures"
+      },
+      "nse_commodities": {
+        "prefix": "commodities/nse_commodities",
+        "partition_by": ["year", "month"],
+        "description": "NSE commodity bhavcopy"
+      }
+    },
+    "currency": {
+      "bhavcopy": {
+        "prefix": "currency/bhavcopy",
+        "partition_by": ["year", "month"],
+        "description": "Currency pair bhavcopy"
+      }
+    },
+    "corporate": {
+      "financial_results": {
+        "prefix": "corporate/financial_results",
+        "partition_by": ["year", "quarter"],
+        "description": "Corporate financial results (quarterly)"
+      },
+      "actions": {
+        "prefix": "corporate/actions",
+        "partition_by": ["symbol"],
+        "description": "Corporate actions (splits, bonuses, etc.) — low volume"
+      }
+    },
+    "institutional": {
+      "fii_dii": {
+        "prefix": "institutional/fii_dii",
+        "partition_by": ["year", "month"],
+        "description": "FII/DII daily flows"
+      }
+    },
+    "surveillance": {
+      "asm": {
+        "prefix": "surveillance/asm",
+        "partition_by": ["year", "month"],
+        "description": "ASM (Additional Surveillance Measure) stocks"
+      },
+      "gsm": {
+        "prefix": "surveillance/gsm",
+        "partition_by": ["year", "month"],
+        "description": "GSM (Graded Surveillance Measure) stocks"
+      },
+      "short_ban": {
+        "prefix": "surveillance/short_ban",
+        "partition_by": ["year", "month"],
+        "description": "Short-selling ban list"
+      }
+    },
+    "meta": {
+      "symbols": {
+        "prefix": "meta/symbols",
+        "partition_by": [],
+        "description": "Materialized view: distinct symbols with metadata"
+      }
+    }
+  }
+}
