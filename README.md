@@ -1,159 +1,96 @@
-# Turborepo starter
+# Destiny: Bloomberg-Terminal-Style NSE India Data Platform
 
-This Turborepo starter is maintained by the Turborepo core team.
+A self-hostable, open-source financial data terminal and analytics platform for NSE (National Stock Exchange) India market data.
 
-## Using this example
+## Architecture
 
-Run the following command:
+Parquet files on S3 are the single source of truth. DuckDB queries them directly via the `httpfs` extension. Local development uses Floci (S3-compatible emulator); production uses real AWS S3, Cloudflare R2, or Backblaze B2.
 
-```sh
-npx create-turbo@latest
+**Stack:**
+- **Ingestion** (Python): financeindia NSE scraper → partitioned, typed Parquet → S3
+- **Query** (Node.js + Python): DuckDB over S3 via httpfs
+- **Terminal UI** (Next.js 16): Bloomberg-style dark multi-panel interface with watchlist, chart, movers, index tickers
+- **Backtesting** (Python): Sharpe/Sortino/Calmar/VaR, walk-forward, Monte Carlo against the same S3 data
+
+## Quickstart (Local POC)
+
+### Prerequisites
+- **Node.js** ≥24, npm ≥11
+- **Python** ≥3.9
+- **Floci** (local S3 emulator): `curl -fsSL https://floci.io/install.sh | sh`
+
+### 1. Start Floci & Ingest Data
+
+```bash
+make dev-up                 # Start Floci, create bucket
+make ingest-bhavcopy        # Ingest last 90 days
 ```
 
-## What's inside?
+Verify: Run DuckDB CLI and confirm `open_price` is `DOUBLE`, not `VARCHAR`.
 
-This Turborepo includes the following packages/apps:
+### 2. Start the Terminal
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `@next/eslint-plugin-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```bash
+make dev                    # Open http://localhost:3000
 ```
 
-Without global `turbo`, use your package manager:
+## Project Structure
 
-```sh
-cd my-turborepo
-npx turbo build
-npm exec turbo build
-npm exec turbo build
+```
+destiny/
+├── LICENSE, README.md, Makefile, .env.example
+├── infra/floci/             # Floci bootstrap, bucket manifest
+├── services/ingest/         # Python: S3/schema/partitioning/bhavcopy ingester
+├── apps/terminal/           # Next.js UI (under development)
+├── packages/
+│   ├── duckdb-lake/         # Shared Node DuckDB client (under development)
+│   ├── ui/                  # Design primitives (under development)
+│   └── {eslint,typescript}-config/
+└── .claude/                 # MCP, skills, commands (under development)
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## Development Commands
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
+```bash
+make dev-up              # Start Floci + create bucket
+make dev                 # Floci + Next.js
+make ingest-bhavcopy     # Ingest equity bhavcopy
+make ingest-all          # All primary datasets
+make lint                # JS/TS/Python linters
+make test-py             # Python tests
+make clean               # Remove build artifacts
 ```
 
-Without global `turbo`:
+## Environment Configuration
 
-```sh
-npx turbo build --filter=docs
-npm exec turbo build --filter=docs
-npm exec turbo build --filter=docs
+All config from env vars (no code changes needed to swap Floci ↔ real S3):
+
+```bash
+# .env (local Floci)
+AWS_ENDPOINT_URL=http://localhost:4566
+AWS_ACCESS_KEY_ID=test
+AWS_SECRET_ACCESS_KEY=test
+LAKE_S3_USE_SSL=false
+
+# Real S3/R2/B2: just change AWS_ENDPOINT_URL and credentials
 ```
 
-### Develop
+## Phased Milestones
 
-To develop all apps and packages, run the following command:
+- **M1** (done): Floci + ingestion infrastructure → S3 with correct schemas
+- **M2**: DuckDB query layer + API routes
+- **M3**: Terminal UI rebuild (watchlist, charts, movers, grid)
+- **M4**: Backtest-engine wired to S3 data
+- **M5**: Claude Code tooling (MCP, skills, commands)
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+## Architecture Details
 
-```sh
-cd my-turborepo
-turbo dev
-```
+See `infra/floci/buckets.json` for the S3 prefix scheme (Hive-partitioned by year/month per dataset). See `services/ingest/src/ingest/schema.py` for explicit PyArrow schemas (fixes the "all strings" bug in local data-lake).
 
-Without global `turbo`, use your package manager:
+## License
 
-```sh
-cd my-turborepo
-npx turbo dev
-npm exec turbo dev
-npm exec turbo dev
-```
+[MIT](./LICENSE)
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## Contact
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-npm exec turbo dev --filter=web
-npm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-npm exec turbo login
-npm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-npm exec turbo link
-npm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+jaiswarsandeep119@gmail.com
