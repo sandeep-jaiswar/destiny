@@ -24,7 +24,7 @@
     "clean": "rm -rf dist/"
   },
   "dependencies": {
-    "@duckdb/node-api": "^1.28.0"
+    "@duckdb/node-api": "1.5.5-r.5"
   },
   "devDependencies": {
     "@repo/typescript-config": "*",

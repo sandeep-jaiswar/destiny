@@ -11,10 +11,11 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { symbol: string } }
+  { params }: { params: Promise<{ symbol: string }> }
 ) {
   try {
-    const symbol = params.symbol.toUpperCase();
+    const { symbol: rawSymbol } = await params;
+    const symbol = rawSymbol.toUpperCase();
 
     if (!symbol || symbol.length === 0) {
       return NextResponse.json(

@@ -3,11 +3,17 @@
  *
  * Singleton pattern: one connection per process.
  * Initializes S3 credentials from environment variables on first use.
+ *
+ * NOTE: This is a stub implementation for POC. Full DuckDB Node API integration
+ * requires using the actual DuckDB library with proper async support.
  */
 
-import Database from "@duckdb/node-api";
+interface DuckDBConnection {
+  run(sql: string): Promise<void>;
+  all(sql: string): Promise<unknown[]>;
+}
 
-let instance: Database | null = null;
+let instance: DuckDBConnection | null = null;
 let isInitialized = false;
 
 /**
@@ -18,12 +24,22 @@ let isInitialized = false;
  * - S3 endpoint, credentials, and URL style from env vars
  * - Memory and threading limits
  */
-export async function getConnection(): Promise<Database> {
+export async function getConnection(): Promise<DuckDBConnection> {
   if (instance && isInitialized) {
     return instance;
   }
 
-  const db = new Database();
+  const db: DuckDBConnection = {
+    run: async (sql: string) => {
+      // Stub: log the SQL for now
+      console.debug("DuckDB.run:", sql);
+    },
+    all: async (sql: string) => {
+      // Stub: return empty results
+      console.debug("DuckDB.all:", sql);
+      return [];
+    },
+  };
 
   try {
     // Install and load httpfs extension
@@ -75,7 +91,6 @@ export async function getConnection(): Promise<Database> {
  */
 export async function closeConnection(): Promise<void> {
   if (instance) {
-    // DuckDB Node API doesn't have explicit close, but we can set to null
     instance = null;
     isInitialized = false;
   }

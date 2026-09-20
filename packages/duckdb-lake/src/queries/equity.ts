@@ -96,7 +96,7 @@ export async function getQuote(symbol: string): Promise<QuoteData | null> {
       return null;
     }
 
-    const row = results[0];
+    const row = results[0] as any;
     return {
       symbol: row.symbol,
       name: row.name || "",
@@ -202,11 +202,15 @@ export async function getDataRange(symbol: string): Promise<{ start: string; end
 
   try {
     const results = await db.all(sql);
-    if (results.length === 0 || !results[0].min_date) {
+    if (results.length === 0) {
       return null;
     }
 
-    const row = results[0];
+    const row = results[0] as any;
+    if (!row.min_date) {
+      return null;
+    }
+
     return {
       start: row.min_date instanceof Date ? row.min_date.toISOString().split("T")[0] : row.min_date,
       end: row.max_date instanceof Date ? row.max_date.toISOString().split("T")[0] : row.max_date,

@@ -12,10 +12,11 @@ export const dynamic = "force-dynamic"; // Disable caching for now
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { symbol: string } }
+  { params }: { params: Promise<{ symbol: string }> }
 ) {
   try {
-    const symbol = params.symbol.toUpperCase();
+    const { symbol: rawSymbol } = await params;
+    const symbol = rawSymbol.toUpperCase();
 
     // Get query parameters
     const searchParams = request.nextUrl.searchParams;
