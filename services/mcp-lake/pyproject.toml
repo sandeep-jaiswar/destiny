@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "destiny-mcp-lake"
+version = "0.1.0"
+description = "Claude MCP server for querying destiny data lake"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    {name = "Sandeep Jaiswal", email = "jaiswarsandeep119@gmail.com"}
+]
+license = {text = "MIT"}
+
+dependencies = [
+    "mcp[cli]>=0.1.0",
+    "duckdb>=0.9.0",
+    "pyarrow>=14.0.0",
+]
+
+[project.scripts]
+destiny-mcp-lake = "mcp_lake.server:main"
