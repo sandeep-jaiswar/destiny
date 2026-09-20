@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "destiny-lake-query"
+version = "0.1.0"
+description = "Shared DuckDB connection helper for querying destiny data lake (Parquet on S3)"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    {name = "Sandeep Jaiswal", email = "jaiswarsandeep119@gmail.com"}
+]
+license = {text = "MIT"}
+
+dependencies = [
+    "duckdb>=0.9.0",
+    "pyarrow>=14.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
